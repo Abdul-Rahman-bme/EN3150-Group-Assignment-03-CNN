@@ -1,20 +1,22 @@
 # Data Directory
 
-The project uses the **Fashion-MNIST** dataset.
+This project uses the **EuroSAT RGB** dataset.
 
-Dataset files are not manually committed to this repository. The dataset will be downloaded programmatically so that the experiments can be reproduced on another machine.
+The dataset contains 27,000 RGB satellite images distributed across 10 land-use and land-cover classes. Each image has a resolution of 64 × 64 pixels.
+
+Dataset files are not committed directly to this repository. The dataset will be downloaded programmatically so that the experiments can be reproduced on another machine.
 
 ## Structure
 
-- `raw/` - Original downloaded dataset files
-- `processed/` - Any generated or preprocessed dataset artifacts
+- `raw/` - Original EuroSAT dataset
+- `processed/` - Generated split information or preprocessing artifacts
 
 ## Dataset Split
 
-A fixed split will be used throughout the project:
+All experiments will use the same fixed split:
 
 - 70% training
 - 15% validation
 - 15% testing
 
-All models will use the same split to ensure a fair comparison.
+A stratified split will be used so that class proportions are maintained across the three subsets.
