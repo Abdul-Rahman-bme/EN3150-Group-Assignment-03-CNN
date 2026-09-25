@@ -2,24 +2,40 @@
 
 ## Selected Dataset
 
-**Fashion-MNIST**
+**EuroSAT RGB**
 
-Fashion-MNIST was selected as the image-classification dataset for the EN3150 Assignment 03.
+EuroSAT was selected as the image-classification dataset for EN3150 Assignment 03.
 
-The dataset contains grayscale images of clothing items belonging to 10 classes. Each image has a resolution of 28 × 28 pixels, which is already below the maximum 64 × 64 resolution required by the assignment.
+The dataset contains 27,000 RGB satellite images belonging to 10 land-use and land-cover classes. Each image has a resolution of 64 × 64 pixels, which directly satisfies the maximum image resolution specified in the assignment.
 
-## Why Fashion-MNIST Was Selected
+## Why EuroSAT Was Selected
 
-Fashion-MNIST was chosen because:
+EuroSAT was selected because:
 
-- it is designed for image-classification experiments;
-- its 28 × 28 resolution is suitable for resource-constrained CNNs;
-- it contains multiple visually similar classes, making the classification task more meaningful than a very simple digit dataset;
-- it contains enough samples to create reliable training, validation, and test subsets;
-- it is small enough to allow repeated CNN and optimizer experiments within reasonable computational time;
-- it provides a suitable benchmark for comparing a standard CNN, a sub-100k parameter lightweight CNN, and lightweight transfer-learning models.
+- the images are already 64 × 64 pixels, matching the resource-constrained setting required by the assignment;
+- the dataset contains RGB images, making it suitable for both custom CNNs and pretrained lightweight architectures;
+- it contains 27,000 images, providing enough data for reliable training, validation, and test subsets;
+- it contains 10 distinct land-use and land-cover classes;
+- the dataset presents a more realistic image-classification problem than very simple grayscale benchmark datasets;
+- the RGB format makes comparison with lightweight pretrained architectures such as MobileNet and EfficientNet more natural;
+- the application is relevant to edge-computing scenarios such as satellite, drone, and remote sensing systems.
 
-## Assignment Data Split
+## Dataset Classes
+
+EuroSAT RGB contains 10 classes:
+
+1. AnnualCrop
+2. Forest
+3. HerbaceousVegetation
+4. Highway
+5. Industrial
+6. Pasture
+7. PermanentCrop
+8. Residential
+9. River
+10. SeaLake
+
+## Data Split
 
 The dataset will be divided according to the assignment specification:
 
@@ -27,31 +43,22 @@ The dataset will be divided according to the assignment specification:
 - Validation: 15%
 - Testing: 15%
 
-A fixed random seed will be used so that all four team members use exactly the same split throughout the project.
+A fixed random seed will be used throughout the project.
 
-## Image Resolution
+Because the number of images is not exactly equal across all classes, stratified splitting will be used to preserve the class distribution as closely as possible in each subset.
 
-The original Fashion-MNIST images are:
+## Image Format
 
-- Width: 28 pixels
-- Height: 28 pixels
-- Channels: 1 grayscale channel
+Each image has:
 
-The custom CNN experiments will retain the native 28 × 28 resolution unless further resizing is justified.
+- Width: 64 pixels
+- Height: 64 pixels
+- Channels: 3 RGB channels
 
-For pre-trained SOTA networks, the images may need to be resized and converted to three channels according to the input requirements of the selected architecture. These transformations will be applied without changing the train, validation, and test membership.
+The native resolution will therefore be retained for the custom CNN models.
 
-## Classes
+For pretrained lightweight models, the same 64 × 64 dataset split will be used. Model-specific normalization required by pretrained weights will be applied where necessary.
 
-Fashion-MNIST contains 10 classes:
+## Edge-Computing Relevance
 
-1. T-shirt/top
-2. Trouser
-3. Pullover
-4. Dress
-5. Coat
-6. Sandal
-7. Shirt
-8. Sneaker
-9. Bag
-10. Ankle boot
+EuroSAT represents a realistic edge image-classification scenario. A lightweight classifier could potentially be deployed on a drone, satellite subsystem, Raspberry Pi, or remote sensing node to perform local land-use classification while reducing communication and computational requirements.
