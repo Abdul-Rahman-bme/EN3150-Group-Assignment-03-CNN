@@ -195,12 +195,20 @@ class ProjectChecks(unittest.TestCase):
 
     def test_notebook_outputs_preserved_and_sources_compile(self):
         notebook = json.loads((ROOT / "test.ipynb").read_text(encoding="utf-8"))
-        baseline = json.loads((ROOT / "outputs/refactor_checks/notebook_preservation.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(notebook["cells"]), baseline["cells"])
+        # Per-ID hashes freeze the supplied saved outputs independently of cell
+        # order. Only the obsolete section 7.20 cells may be absent.
+        baseline = json.loads((ROOT / "tests/fixtures/notebook_preservation.json").read_text(encoding="utf-8"))
         import hashlib
-        fields = [{key: value for key, value in cell.items() if key != "source"} for cell in notebook["cells"]]
-        actual = hashlib.sha256(json.dumps(fields, sort_keys=True).encode()).hexdigest()
-        self.assertEqual(actual, baseline["cell_records_sha256"])
+        cells_by_id = {cell["id"]: cell for cell in notebook["cells"]}
+        self.assertEqual(len(cells_by_id), len(notebook["cells"]), "Duplicate notebook cell IDs")
+        historical = baseline["cell_records_sha256_by_id"]
+        required = set(historical) - set(baseline["optional_cell_ids"])
+        self.assertFalse(required - cells_by_id.keys(),
+                         f"Missing required historical cells: {sorted(required - cells_by_id.keys())}")
+        for cell_id in historical.keys() & cells_by_id.keys():
+            fields = {key: value for key, value in cells_by_id[cell_id].items() if key != "source"}
+            actual = hashlib.sha256(json.dumps(fields, sort_keys=True).encode()).hexdigest()
+            self.assertEqual(actual, historical[cell_id], f"Historical cell changed: {cell_id}")
         self.assertEqual(notebook["metadata"], baseline["metadata"])
         for cell in notebook["cells"]:
             if cell["cell_type"] == "code":
