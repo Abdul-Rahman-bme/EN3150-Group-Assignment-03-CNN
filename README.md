@@ -43,9 +43,20 @@ That optional command installs this project's entry point without downloading
 or changing its dependencies. The temporary distutils setting works around the
 inspected Python 3.11 environment's existing setuptools import assertion; package
 metadata was successfully built with that setting. The refactor was verified through `PYTHONPATH`
-without installing packages. To use the shared imports in `test.ipynb`, use the
-same environment as its kernel and start Jupyter/VS Code from the configured
-PowerShell session, or use the optional editable installation.
+without installing packages. For `test.ipynb`, select `ml_env_fixed` as the kernel
+and run its first code cell. It finds the project from the kernel's working
+directory (the project root or `notebooks/`, including deeper subfolders) and
+adds `src/` to that kernel's import path. The notebook does not need a terminal
+`PYTHONPATH` setting or an editable installation.
+
+After restarting the notebook kernel, run the first code cell, then any saved
+history, learning-curve, optimizer-comparison or saved-checkpoint validation
+cell in section 7. Each reads its saved inputs directly; data exploration,
+loader construction and training setup are not prerequisites.
+Run all cells in order for the complete analysis. Notebook execution reuses
+the completed runs and never starts training. Every plot or validation invocation
+saves to a fresh folder under `outputs/reports/`, including when rerunning a cell.
+The notebook's existing outputs remain the historical experiment record.
 
 The inspected environment contains torch 2.5.1, torchvision 0.20.1, NumPy 1.26.4,
 pandas 2.3.3, matplotlib 3.10.9, Pillow 12.3.0 and tqdm 4.66.1. `requirements.txt`
