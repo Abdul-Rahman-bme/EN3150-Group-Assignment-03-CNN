@@ -1,1 +1,28 @@
 /data/raw/
+
+notes.txt
+
+# Python, environments and notebooks
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+.conda/
+*.egg-info/
+build/
+dist/
+
+# Generated binary weights and reports; configs, CSVs and summaries stay trackable.
+*.pt
+*.pth
+*.ckpt
+/outputs/**/*.png
+/outputs/**/*.pdf
+/outputs/**/*.tmp
+/tmp/

@@ -1,0 +1,8 @@
+# Dependency inventory for the existing environment; no reinstall is required.
+torch>=2.0
+torchvision
+numpy
+pandas
+matplotlib
+Pillow
+tqdm
