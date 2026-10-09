@@ -1,0 +1,58 @@
+{
+  "class_names": [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake"
+  ],
+  "normalization_mean": [
+    0.3439007467932198,
+    0.37995412567515396,
+    0.40754934092415773
+  ],
+  "normalization_std": [
+    0.20242460536699797,
+    0.13668293748114527,
+    0.11540833375611878
+  ],
+  "model": "model_b",
+  "optimizer": "sgd",
+  "optimizer_settings": {
+    "lr": 0.003
+  },
+  "epochs": 30,
+  "batch_size": 64,
+  "seed": 42,
+  "weight_decay": 0.0001,
+  "device": "cuda",
+  "num_workers": 0,
+  "input_size": 64,
+  "data_root": "data/raw/eurosat/2750",
+  "split_dir": "data/splits",
+  "precision": "float32",
+  "checkpoint_selection": "minimum_validation_loss",
+  "augmentation": [
+    "horizontal_flip_p0.5",
+    "vertical_flip_p0.5",
+    "random_quarter_turn"
+  ],
+  "format_version": 1,
+  "python_version": "3.11.14",
+  "environment": {
+    "torch": "2.5.1",
+    "torchvision": "0.20.1",
+    "numpy": "1.26.4",
+    "Pillow": "12.3.0"
+  },
+  "split_sha256": {
+    "train": "0b375395876f88dc541857099d6bd0e8268561b75fbe423463ee0943e35ba769",
+    "validation": "a88a3e0c7d45eb44079a74245d9503457713aa8af4657ffec2f8fd9cfc32bf41",
+    "test": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928"
+  }
+}
