@@ -22,7 +22,7 @@ def build_parser():
     prepare.add_argument("--output-dir", help="Optional fresh folder for preparation summary")
 
     train = commands.add_parser("train", help="Start a fresh run or resume a new incomplete run")
-    train.add_argument("--model", choices=["model_a", "model_b"], default="model_a")
+    train.add_argument("--model", choices=["model_a", "model_b", "model_c"], default="model_a")
     train.add_argument("--optimizer", choices=["adam", "sgd", "sgd_momentum"], default="adam")
     train.add_argument("--lr", type=float)
     train.add_argument("--run-name")

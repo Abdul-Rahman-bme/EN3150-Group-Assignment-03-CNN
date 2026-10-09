@@ -44,8 +44,24 @@ class LightweightCNN(nn.Module):
         return self.classifier(torch.flatten(self.pool(self.features(x)), start_dim=1))
 
 
+class WideLightweightCNN(nn.Module):
+    """Model C: Model B's separable blocks with twice the output channels."""
+
+    def __init__(self, num_classes=10):
+        super().__init__()
+        self.features = nn.Sequential(DepthwiseSeparableBlock(3, 64),
+                                      DepthwiseSeparableBlock(64, 128),
+                                      DepthwiseSeparableBlock(128, 256))
+        self.pool = nn.AdaptiveAvgPool2d(1)
+        self.classifier = nn.Linear(256, num_classes)
+
+    def forward(self, x):
+        return self.classifier(torch.flatten(self.pool(self.features(x)), start_dim=1))
+
+
 def build_model(name, num_classes=10):
-    return {"model_a": StandardCNN, "model_b": LightweightCNN}[name](num_classes)
+    return {"model_a": StandardCNN, "model_b": LightweightCNN,
+            "model_c": WideLightweightCNN}[name](num_classes)
 
 
 def model_cost(model, weights_path=None):

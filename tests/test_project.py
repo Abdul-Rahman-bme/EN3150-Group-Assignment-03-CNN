@@ -38,8 +38,9 @@ class ProjectChecks(unittest.TestCase):
         (ROOT / "tmp").mkdir(exist_ok=True)
         torch.set_num_threads(2)
 
-    def test_model_shapes_parameters_macs_and_all_six_checkpoints(self):
-        for name, parameters, macs in [("model_a", 94762, 41288960), ("model_b", 12965, 5141760)]:
+    def test_model_shapes_parameters_macs_and_all_saved_checkpoints(self):
+        for name, parameters, macs in [("model_a", 94762, 41288960), ("model_b", 12965, 5141760),
+                                       ("model_c", 46373, 18561536)]:
             model = build_model(name)
             model.eval()
             with torch.no_grad():
@@ -51,7 +52,7 @@ class ProjectChecks(unittest.TestCase):
             self.assertEqual(cost["estimated_fp32_parameter_bytes"], 4 * parameters)
             self.assertEqual(cost["conv_linear_macs_per_image"], macs)
         folders = sorted(RUNS.glob("*/config.json"))
-        self.assertEqual(len(folders), 6)
+        self.assertGreaterEqual(len(folders), 6)
         for config_path in folders:
             config = load_config(config_path)
             model = build_model(config["model"], len(config["class_names"]))
@@ -128,6 +129,11 @@ class ProjectChecks(unittest.TestCase):
 
     def test_resume_with_simulated_epochs_without_training(self):
         """Exercise the actual save/resume loop with fake epochs; no gradients or optimizer steps."""
+        for model_name in ("model_a", "model_c"):
+            with self.subTest(model=model_name):
+                self.check_simulated_resume(model_name)
+
+    def check_simulated_resume(self, model_name):
         calls = 0
 
         def fake_epoch(model, loader, criterion, device, optimizer=None, **kwargs):
@@ -151,7 +157,7 @@ class ProjectChecks(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=ROOT / "tmp") as directory:
             output_root = Path(directory)
             with patch("cnn_assignment.training.run_epoch", side_effect=fake_epoch), contextlib.redirect_stdout(io.StringIO()):
-                whole = train(ROOT, run_name="whole", output_root=output_root, epochs=3, device_name="cpu")
+                whole = train(ROOT, model_name=model_name, run_name="whole", output_root=output_root, epochs=3, device_name="cpu")
             calls = 0
 
             def interrupted(*args, **kwargs):
@@ -161,7 +167,7 @@ class ProjectChecks(unittest.TestCase):
 
             with patch("cnn_assignment.training.run_epoch", side_effect=interrupted), contextlib.redirect_stdout(io.StringIO()):
                 with self.assertRaisesRegex(RuntimeError, "Simulated interruption"):
-                    train(ROOT, run_name="resumed", output_root=output_root, epochs=3, device_name="cpu")
+                    train(ROOT, model_name=model_name, run_name="resumed", output_root=output_root, epochs=3, device_name="cpu")
             checkpoint_path = output_root / "resumed/last_checkpoint.pt"
             snapshot = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
             self.assertEqual(snapshot["epoch"], 1)
@@ -172,6 +178,11 @@ class ProjectChecks(unittest.TestCase):
             pd.testing.assert_frame_equal(pd.read_csv(whole / "history.csv"), pd.read_csv(resumed / "history.csv"))
             full = torch.load(whole / "last_checkpoint.pt", map_location="cpu", weights_only=False)
             continued = torch.load(resumed / "last_checkpoint.pt", map_location="cpu", weights_only=False)
+            source = load_config(CONFIG)
+            self.assertEqual(continued["config"]["model"], model_name)
+            for key in ("class_names", "normalization_mean", "normalization_std"):
+                self.assertEqual(continued["config"][key], source[key])
+            self.assertEqual(continued["config"]["split_dir"], "data/splits")
             self.assertEqual(full["best_result"], continued["best_result"])
             for key in full["model_state"]:
                 self.assertTrue(torch.equal(full["model_state"][key], continued["model_state"][key]), key)
@@ -194,6 +205,8 @@ class ProjectChecks(unittest.TestCase):
             self.assertTrue((repair / "best_weights.pt").is_file())
 
     def test_notebook_outputs_preserved_and_sources_compile(self):
+        from IPython.core.inputtransformer2 import TransformerManager
+
         notebook = json.loads((ROOT / "test.ipynb").read_text(encoding="utf-8"))
         # Per-ID hashes freeze the supplied saved outputs independently of cell
         # order. Only the obsolete section 7.20 cells may be absent.
@@ -210,9 +223,12 @@ class ProjectChecks(unittest.TestCase):
             actual = hashlib.sha256(json.dumps(fields, sort_keys=True).encode()).hexdigest()
             self.assertEqual(actual, historical[cell_id], f"Historical cell changed: {cell_id}")
         self.assertEqual(notebook["metadata"], baseline["metadata"])
+        transformer = TransformerManager()
         for cell in notebook["cells"]:
             if cell["cell_type"] == "code":
-                compile("".join(cell["source"]), "test.ipynb", "exec")
+                with self.subTest(cell_id=cell["id"]):
+                    source = transformer.transform_cell("".join(cell["source"]))
+                    compile(source, f"test.ipynb[cell {cell['id']}]", "exec")
 
     def test_cli_from_another_working_directory_and_plot_without_torch(self):
         environment = os.environ.copy()
@@ -234,7 +250,9 @@ class ProjectChecks(unittest.TestCase):
             self.assertEqual(plotted.returncode, 0, plotted.stderr)
             self.assertTrue((outside / "plots/optimizer_comparison.png").is_file())
             summary = pd.read_csv(outside / "plots/optimizer_comparison.csv")
-            self.assertEqual(len(summary), 6)
+            saved_histories = [path for path in RUNS.glob("*/history.csv")
+                               if (path.parent / "config.json").is_file()]
+            self.assertEqual(len(summary), len(saved_histories))
             self.assertAlmostEqual(summary.loc[summary["run_folder"] == "model_a_adam_lr0.001", "selected_val_loss"].iloc[0], .1721100697215692)
             # A plot command rejects a report folder it already wrote.
             with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as failure:

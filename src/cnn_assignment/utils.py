@@ -45,7 +45,7 @@ def load_config(path):
     for key in required:
         if key not in config:
             raise ValueError(f"Missing {key} in {path}")
-    if config["model"] not in ("model_a", "model_b"):
+    if config["model"] not in ("model_a", "model_b", "model_c"):
         raise ValueError("Unsupported saved model architecture")
     names = config["class_names"]
     if len(names) != 10 or len(set(names)) != 10:

@@ -10,40 +10,49 @@ as the reference. New reports go into fresh folders under `outputs/reports/`.
 
 ## Windows setup
 
-Use the existing `ml_env_fixed` environment. No dependency upgrade or reinstall
-is needed. In PowerShell:
+Use the existing `ml_env_fixed` environment. Install this local project once in
+editable mode so new terminals can import it without setting `PYTHONPATH`.
+No dependency upgrade or reinstall is needed. In PowerShell:
 
 ```powershell
 conda activate ml_env_fixed
 $Project = 'D:\2_ML PROJECTS\38. CNN_PR\EN3150-Assignment03-CNN'
-$env:PYTHONPATH = Join-Path $Project 'src'
-python -m cnn_assignment --help
-```
-
-These commands work from any current directory. With source imports, the package
-finds the project from its own file location. Relative command paths resolve
-against the project, including output paths. To select another project location,
-put `--project-root "D:\path\to\project"` **before** the command name.
-The temporary `PYTHONPATH` setting applies to this PowerShell session only.
-
-Alternatively, install only this local package into the active environment:
-
-```powershell
 $PreviousDistutilsSetting = $env:SETUPTOOLS_USE_DISTUTILS
 try {
     $env:SETUPTOOLS_USE_DISTUTILS = 'stdlib'
-    python -m pip install --no-deps --no-build-isolation -e "$Project"
+    python -m pip install --no-index --no-deps --no-build-isolation -e "$Project"
 } finally {
     $env:SETUPTOOLS_USE_DISTUTILS = $PreviousDistutilsSetting
 }
-cnn-assignment --help
+python -m cnn_assignment --help
 ```
 
-That optional command installs this project's entry point without downloading
-or changing its dependencies. The temporary distutils setting works around the
-inspected Python 3.11 environment's existing setuptools import assertion; package
-metadata was successfully built with that setting. The refactor was verified through `PYTHONPATH`
-without installing packages. For `test.ipynb`, select `ml_env_fixed` as the kernel
+The setup command installs only this project's editable package and entry point.
+`--no-index` disables package-index access, `--no-deps` skips dependencies, and
+`--no-build-isolation` uses the environment's existing build tools. The temporary
+distutils setting works around the inspected Python 3.11 environment's existing
+setuptools import assertion and is restored afterward. Source edits are available
+immediately; keep the project at this location or reinstall after moving it.
+
+In a fresh PowerShell terminal, activate the environment and run:
+
+```powershell
+conda activate ml_env_fixed
+python -m cnn_assignment --help
+```
+
+The editable installation was verified in `ml_env_fixed` from a fresh shell
+outside the project directory with `PYTHONPATH` and `SETUPTOOLS_USE_DISTUTILS`
+removed: `python -m cnn_assignment --help` exited successfully, and the package
+import resolved to this project's `src/cnn_assignment/`.
+
+Commands work from any current directory. The package finds the project from its
+own file location. Relative command paths resolve against the project, including
+output paths. To select another project location, put
+`--project-root "D:\path\to\project"` **before** the command name.
+The `cnn-assignment` entry point is also available in the activated environment.
+
+For `test.ipynb`, select `ml_env_fixed` as the kernel
 and run its first code cell. It finds the project from the kernel's working
 directory (the project root or `notebooks/`, including deeper subfolders) and
 adds `src/` to that kernel's import path. The notebook does not need a terminal
@@ -124,6 +133,36 @@ python -m cnn_assignment train --model model_a --optimizer adam --lr 0.001 --ski
 This skips the completed original Adam run without training or writing to it.
 An incomplete existing folder still raises an error. Use a fresh run name for a
 repeat. There is no overwrite flag.
+
+## Model C experiments
+
+Model C (`model_c`, `WideLightweightCNN`) uses the same saved splits, class order,
+normalization, augmentation, training loop and checkpoint selection as Models A
+and B. Its four planned runs are below. These commands are instructions for later
+execution; adding the model does not start them or create run artifacts.
+
+```powershell
+python -m cnn_assignment train --model model_c --optimizer adam --lr 0.001 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
+python -m cnn_assignment train --model model_c --optimizer sgd --lr 0.01 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
+python -m cnn_assignment train --model model_c --optimizer sgd_momentum --lr 0.01 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
+python -m cnn_assignment train --model model_c --optimizer sgd --lr 0.003 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
+```
+
+Momentum is 0.9 for the third run. Default run folders are
+`model_c_adam_lr0.001`, `model_c_sgd_lr0.01`,
+`model_c_sgd_momentum_lr0.01` and `model_c_sgd_lr0.003` under
+`outputs/custom_cnn/`. Once runs exist, the existing commands support them:
+
+```powershell
+python -m cnn_assignment train --resume outputs/custom_cnn/model_c_adam_lr0.001
+python -m cnn_assignment validate --run outputs/custom_cnn/model_c_adam_lr0.001 --compare-history
+python -m cnn_assignment plot --run outputs/custom_cnn/model_c_adam_lr0.001
+python -m cnn_assignment plot
+```
+
+The resume command applies to an incomplete run with a full last checkpoint.
+Comparison reports automatically include Model C histories alongside existing
+models and distinguish the two plain SGD learning rates.
 
 ## Resume a new incomplete run
 
@@ -210,6 +249,7 @@ No test evaluation was performed during the refactor.
 | --- | ---: | ---: | ---: | ---: |
 | StandardCNN (`model_a`) | 94,762 | 379,048 | 41,288,960 | 387,218 |
 | LightweightCNN (`model_b`) | 12,965 | 51,860 | 5,141,760 | 61,016 |
+| WideLightweightCNN (`model_c`) | 46,373 | 185,492 | 18,561,536 | Not trained |
 
 FP32 parameter storage is four bytes per trainable parameter. Actual weight-file
 size includes BatchNorm buffers and serialization overhead. MACs count only
@@ -222,6 +262,13 @@ Both models retain the original layer names, channel widths 3 → 32 → 64 → 
 pooling and Linear(128, 10) classifier. The lightweight blocks have depthwise and
 pointwise convolutions followed by one BatchNorm/ReLU/pooling sequence, with no
 extra activation or normalization between the convolutions.
+
+Model C reuses those lightweight blocks with widths 3 → 64 → 128 → 256,
+adaptive average pooling to 1 × 1, flattening and Linear(256, 10). Both
+convolutions in each block keep `bias=False`; BatchNorm keeps its affine
+parameters and the classifier keeps its bias. Code checks verify the 46,373
+trainable parameters and MAC count for a 64 × 64 input. The blocks contribute
+347, 9,024 and 34,432 parameters, and the classifier contributes 2,570.
 
 ## Checks and files
 
