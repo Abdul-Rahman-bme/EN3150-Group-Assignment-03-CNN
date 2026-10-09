@@ -1,0 +1,3 @@
+run_folder,model,optimizer,learning_rate,selected_epoch,selected_val_loss,selected_val_accuracy_percent,mean_train_seconds,mean_train_seconds_excluding_first
+model_a_adam_lr0.001,model_a,adam,0.001,30,0.1721100697215692,94.12345679012346,26.77683129666669,25.266525355172455
+model_b_adam_lr0.001,model_b,adam,0.001,27,0.2444860985911922,91.55555555555556,27.785075646666396,24.94946234827562

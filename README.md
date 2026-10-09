@@ -4,8 +4,11 @@ I use this project to prepare saved data, train custom CNNs, plot histories and
 evaluate selected checkpoints independently from the terminal. Each command
 loads its own files. No notebook cells need to run first.
 
-The original EuroSAT RGB dataset, saved splits and six completed experiments
-remain in place. The refactor uses their saved configurations and notebook code
+The original EuroSAT RGB dataset, saved splits and 12 completed custom CNN experiments
+remain in place. See [my custom CNN validation results](docs/custom_cnn_results.md)
+for all saved configurations, selected epochs, validation metrics and training times.
+Browse the [saved-results index](outputs/README.md) for retained reports and the archive log.
+The refactor uses their saved configurations and notebook code
 as the reference. New reports go into fresh folders under `outputs/reports/`.
 
 ## Windows setup
@@ -138,8 +141,9 @@ repeat. There is no overwrite flag.
 
 Model C (`model_c`, `WideLightweightCNN`) uses the same saved splits, class order,
 normalization, augmentation, training loop and checkpoint selection as Models A
-and B. Its four planned runs are below. These commands are instructions for later
-execution; adding the model does not start them or create run artifacts.
+and B. Its four completed configurations are below. These commands show their
+settings; existing run folders are protected. See the
+[saved results and discussion](docs/custom_cnn_results.md) for their validation results.
 
 ```powershell
 python -m cnn_assignment train --model model_c --optimizer adam --lr 0.001 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
@@ -151,7 +155,7 @@ python -m cnn_assignment train --model model_c --optimizer sgd --lr 0.003 --epoc
 Momentum is 0.9 for the third run. Default run folders are
 `model_c_adam_lr0.001`, `model_c_sgd_lr0.01`,
 `model_c_sgd_momentum_lr0.01` and `model_c_sgd_lr0.003` under
-`outputs/custom_cnn/`. Once runs exist, the existing commands support them:
+`outputs/custom_cnn/`. The existing commands support these saved runs:
 
 ```powershell
 python -m cnn_assignment train --resume outputs/custom_cnn/model_c_adam_lr0.001
@@ -249,7 +253,7 @@ No test evaluation was performed during the refactor.
 | --- | ---: | ---: | ---: | ---: |
 | StandardCNN (`model_a`) | 94,762 | 379,048 | 41,288,960 | 387,218 |
 | LightweightCNN (`model_b`) | 12,965 | 51,860 | 5,141,760 | 61,016 |
-| WideLightweightCNN (`model_c`) | 46,373 | 185,492 | 18,561,536 | Not trained |
+| WideLightweightCNN (`model_c`) | 46,373 | 185,492 | 18,561,536 | 196,521 |
 
 FP32 parameter storage is four bytes per trainable parameter. Actual weight-file
 size includes BatchNorm buffers and serialization overhead. MACs count only
