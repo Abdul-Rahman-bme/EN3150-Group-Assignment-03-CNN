@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cnn-assignment"
+version = "0.1.0"
+description = "Reproducible EuroSAT custom CNN experiments for EN3150"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.0", "torchvision", "numpy", "pandas", "matplotlib", "Pillow", "tqdm"]
+
+[project.scripts]
+cnn-assignment = "cnn_assignment.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,94 @@
+{
+  "base": "0056ee8",
+  "merged_branch_tip": "4bdd4d5",
+  "dataset_training": false,
+  "test_set_evaluation": false,
+  "missing_initially": [
+    "data/raw images",
+    "trained best_weights.pt files",
+    "source ImageNet checkpoints",
+    "outputs/refactor_checks/source_manifest.json"
+  ],
+  "provided_ignored_local_artifacts": [
+    "outputs/custom_cnn/adam_comparison.csv",
+    "outputs/custom_cnn/adam_comparison.png",
+    "outputs/custom_cnn/model_a_adam_lr0.001/best_weights.pt",
+    "outputs/custom_cnn/model_a_adam_lr0.001/learning_curves.png",
+    "outputs/custom_cnn/model_a_sgd_lr0.003/best_weights.pt",
+    "outputs/custom_cnn/model_a_sgd_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/model_a_sgd_lr0.01/learning_curves.png",
+    "outputs/custom_cnn/model_a_sgd_momentum_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/model_a_sgd_momentum_lr0.01/learning_curves.png",
+    "outputs/custom_cnn/model_b_adam_lr0.001/best_weights.pt",
+    "outputs/custom_cnn/model_b_adam_lr0.001/learning_curves.png",
+    "outputs/custom_cnn/model_b_sgd_lr0.003/best_weights.pt",
+    "outputs/custom_cnn/model_b_sgd_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/model_b_sgd_lr0.01/learning_curves.png",
+    "outputs/custom_cnn/model_b_sgd_momentum_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/model_b_sgd_momentum_lr0.01/learning_curves.png",
+    "outputs/custom_cnn/model_c_adam_lr0.001/best_weights.pt",
+    "outputs/custom_cnn/model_c_sgd_lr0.003/best_weights.pt",
+    "outputs/custom_cnn/model_c_sgd_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/model_c_sgd_momentum_lr0.01/best_weights.pt",
+    "outputs/custom_cnn/optimizer_comparison.csv",
+    "outputs/custom_cnn/optimizer_comparison.png",
+    "outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/best_weights.pt",
+    "outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/best_weights.pt",
+    "outputs/pretrained_weights/mobilenet_v2-7ebf99e0.pth",
+    "outputs/pretrained_weights/shufflenetv2_x0.5-f707e7126e.pth",
+    "outputs/refactor_checks/source_manifest.json"
+  ],
+  "upstream_generated_split_membership_matches_saved_csv": {
+    "train": true,
+    "validation": true,
+    "test": true
+  },
+  "three_notebooks_source_compilation": "passed",
+  "upstream_standard_cnn_synthetic_shapes": {
+    "parameters": 2193226,
+    "batch_sizes": [
+      1,
+      20,
+      64
+    ],
+    "finite": true,
+    "dataset_loader_executed": false
+  },
+  "unit_checks": {
+    "run": 30,
+    "failures": 0,
+    "errors": 0,
+    "skipped": [],
+    "passed": true,
+    "scope": "28 initially passed; two artifact-dependent tests passed on focused rerun after providing raw-image paths."
+  },
+  "not_run": [
+    {
+      "suite": "test_notebook.py",
+      "reason": "Its real validation/preview passes were not rerun. Three-notebook source compilation, preservation checks and guarded fresh-kernel saved-result analysis passed instead."
+    }
+  ],
+  "excluded_local_artifacts": "All copied best/source weights and the legacy manifest remain ignored; no raw images or full resume files copied.",
+  "initial_artifact_only_errors": {
+    "run": 30,
+    "failures": 0,
+    "errors": 3,
+    "skipped": [],
+    "passed": false
+  },
+  "missing_artifact_resolution": "Ignored local data/raw junction points to the original images; no images copied/modified and no dataset inference performed.",
+  "affected_checks_rerun": {
+    "run": 2,
+    "failures": 0,
+    "errors": 0,
+    "passed": true
+  },
+  "contributor_file_preservation": {
+    "upstream_notebooks_and_documentation": "unchanged",
+    "heshan_model_code_notebook_splits_and_experiments": "unchanged"
+  },
+  "copied_local_artifacts_ignored": true,
+  "integration_documentation_links": "passed",
+  "git_diff_check": "passed",
+  "original_local_notebook_models_splits_and_artifacts": "unchanged hashes"
+}

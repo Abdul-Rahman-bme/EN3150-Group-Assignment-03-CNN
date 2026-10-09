@@ -1,0 +1,63 @@
+{
+  "run": "model_c_adam_lr0.001",
+  "split": "test",
+  "device": "cuda",
+  "class_names": [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake"
+  ],
+  "loss": 0.1799133331981706,
+  "accuracy": 0.9437037037037037,
+  "seconds": 3.463148300001194,
+  "images": 4050,
+  "macro_precision": 0.9422545649814922,
+  "macro_recall": 0.9425111111111111,
+  "macro_f1": 0.9418222291398649,
+  "zero_division": 0,
+  "total_parameters": 46373,
+  "trainable_parameters": 46373,
+  "estimated_fp32_parameter_bytes": 185492,
+  "estimated_fp32_total_parameter_bytes": 185492,
+  "conv_linear_macs_per_image": 18561536,
+  "mac_input_shape": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "mac_scope": "Convolution and linear multiply-accumulates only; not measured inference speed",
+  "size_units": {
+    "byte": "8 bits",
+    "MB": "1,000,000 bytes",
+    "MiB": "1,048,576 bytes"
+  },
+  "actual_weights_file_bytes": 196521,
+  "actual_weights_file_MB": 0.196521,
+  "actual_weights_file_MiB": 0.18741703033447266,
+  "weights_sha256": "fc6968c4ea8d613098f75b0be9573d28cb5b5b7e9896a62c49c3edcf505889aa",
+  "split_sha256": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928",
+  "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized",
+  "input_size": 64,
+  "normalization_mean": [
+    0.3439007467932198,
+    0.37995412567515396,
+    0.40754934092415773
+  ],
+  "normalization_std": [
+    0.20242460536699797,
+    0.13668293748114527,
+    0.11540833375611878
+  ],
+  "evaluation_settings": {
+    "batch_size": 64,
+    "num_workers": 0
+  }
+}
