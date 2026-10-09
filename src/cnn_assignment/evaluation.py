@@ -6,7 +6,7 @@ import pandas as pd
 import torch
 from torch import nn
 from .data import load_split, make_loader, split_fingerprints
-from .models import build_model, model_cost
+from .models import build_model, load_saved_state, model_cost
 from .training import run_epoch
 from .transforms import make_transform
 from .utils import load_config, new_output_directory, resolve_path, seed_everything, select_device, sha256, write_json
@@ -46,9 +46,10 @@ def evaluate(root, run, *, split="validation", device_name="auto", data_root=Non
     frame = load_split(split_dir, split, config["class_names"])
     device = select_device(device_name)
     seed_everything(config["seed"])
-    model = build_model(config["model"], len(config["class_names"])).to(device)
+    # Construct without ImageNet weights: saved weights are the sole source here.
+    model = build_model(config["model"], len(config["class_names"]), pretrained=False).to(device)
     weights_path = folder / "best_weights.pt"
-    model.load_state_dict(torch.load(weights_path, map_location="cpu", weights_only=True), strict=True)
+    load_saved_state(model, torch.load(weights_path, map_location="cpu", weights_only=True))
     loader = make_loader(frame, data_root, make_transform(config), config["batch_size"],
                          device, num_workers=num_workers)
     measured, labels, predicted, confidences = run_epoch(
@@ -58,6 +59,12 @@ def evaluate(root, run, *, split="validation", device_name="auto", data_root=Non
               **measured, **metrics, **model_cost(model, weights_path),
               "weights_sha256": sha256(weights_path), "split_sha256": sha256(split_dir / f"{split}.csv"),
               "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized"}
+    result.update(input_size=config.get("input_size", 64),
+                  normalization_mean=config["normalization_mean"], normalization_std=config["normalization_std"],
+                  evaluation_settings={"batch_size": config["batch_size"], "num_workers": num_workers})
+    for key in ("pretrained_weights", "pretrained_source", "pretrained_source_sha256", "fine_tune_all_layers"):
+        if key in config:
+            result[key] = config[key]
     if compare_history:
         history = pd.read_csv(folder / "history.csv")
         best = history.loc[history["val_loss"].idxmin()]

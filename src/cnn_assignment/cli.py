@@ -4,6 +4,7 @@ import argparse
 import json
 from datetime import datetime, timezone
 from .utils import load_config, new_output_directory, project_root, resolve_path, write_json
+from .model_specs import MODEL_NAMES
 
 DEFAULT_CONFIG = "outputs/custom_cnn/model_a_adam_lr0.001/config.json"
 
@@ -22,12 +23,13 @@ def build_parser():
     prepare.add_argument("--output-dir", help="Optional fresh folder for preparation summary")
 
     train = commands.add_parser("train", help="Start a fresh run or resume a new incomplete run")
-    train.add_argument("--model", choices=["model_a", "model_b", "model_c"], default="model_a")
+    train.add_argument("--model", choices=MODEL_NAMES, default="model_a")
     train.add_argument("--optimizer", choices=["adam", "sgd", "sgd_momentum"], default="adam")
     train.add_argument("--lr", type=float)
     train.add_argument("--run-name")
-    train.add_argument("--config", default=DEFAULT_CONFIG, help="Source of class order and normalization for new runs")
-    train.add_argument("--output-root", default="outputs/custom_cnn")
+    train.add_argument("--config", default=DEFAULT_CONFIG, help="Source of saved class order; custom runs also reuse its normalization")
+    train.add_argument("--output-root", help="Defaults to outputs/custom_cnn or outputs/pretrained_cnn by model")
+    train.add_argument("--pretrained-weights-file", help="Official ImageNet checkpoint downloaded manually; fresh pretrained runs only")
     train.add_argument("--data-root")
     train.add_argument("--split-dir")
     train.add_argument("--epochs", type=int, default=30)
@@ -42,6 +44,8 @@ def build_parser():
     plot = commands.add_parser("plot", help="Plot saved histories or compare optimizers")
     plot.add_argument("--run", help="One run; omit to compare all saved runs")
     plot.add_argument("--runs-root", default="outputs/custom_cnn")
+    plot.add_argument("--additional-runs-root", action="append", default=[],
+                      help="Include another saved-run collection in the comparison (repeatable)")
     plot.add_argument("--optimizer", choices=["adam", "sgd", "sgd_momentum"], help="Filter comparison runs")
     plot.add_argument("--output-dir", help="Fresh report folder; defaults to a timestamped folder")
 
@@ -100,6 +104,7 @@ def execute(args, parser):
             options = {part.split("=", 1)[0] for part in parser._argv if part.startswith("--")}
             overrides = options & {"--model", "--optimizer", "--lr", "--run-name", "--config", "--output-root",
                                    "--epochs", "--batch-size", "--seed", "--weight-decay"}
+            overrides |= options & {"--pretrained-weights-file"}
             if overrides:
                 raise ValueError("Resume uses the saved configuration; remove " + ", ".join(sorted(overrides)))
         from .training import train
@@ -108,22 +113,23 @@ def execute(args, parser):
               split_dir=args.split_dir, epochs=args.epochs, batch_size=args.batch_size,
               seed=args.seed, weight_decay=args.weight_decay, num_workers=args.num_workers,
               device_name=args.device, skip_existing=args.skip_existing, resume=args.resume,
-              progress=not args.no_progress)
+              progress=not args.no_progress, pretrained_weights_file=args.pretrained_weights_file)
     elif args.command == "plot":
         from .plotting import history_summary, plot_comparison, plot_history
         output_path = report_path(root, "plot", args.output_dir)
         if args.run:
-            if args.optimizer:
-                raise ValueError("--optimizer filters comparisons; use it without --run")
+            if args.optimizer or args.additional_runs_root:
+                raise ValueError("--optimizer and --additional-runs-root apply to comparisons; use them without --run")
             run = resolve_path(root, args.run)
             history_summary(run)  # Read inputs before reserving output.
             output = new_output_directory(output_path)
             summary = plot_history(run, output / "learning_curves.png")
             write_json(output / "summary.json", summary)
         else:
-            runs_root = resolve_path(root, args.runs_root)
-            runs = [path for path in sorted(runs_root.iterdir()) if path.is_dir()
-                    and (path / "history.csv").is_file() and (path / "config.json").is_file()]
+            runs_roots = [resolve_path(root, value) for value in [args.runs_root, *args.additional_runs_root]]
+            runs = sorted({path for runs_root in runs_roots for path in runs_root.iterdir()
+                           if path.is_dir() and (path / "history.csv").is_file()
+                           and (path / "config.json").is_file()})
             if args.optimizer:
                 runs = [run for run in runs if history_summary(run)["optimizer"] == args.optimizer]
             if not runs:

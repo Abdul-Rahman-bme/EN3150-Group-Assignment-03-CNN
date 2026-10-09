@@ -42,6 +42,19 @@ RERUN_CELL_IDS = ['5b81687e', '7fd68929', '0dd7d495', '8fbf1bbb']
 GUARD = '''
 import cnn_assignment.training as training_module
 import cnn_assignment.evaluation as evaluation_module
+import tempfile as tempfile_module
+
+# Saved notebook source stays unchanged; verification reports go into scratch space.
+def scratch_reports(*args, _original=tempfile_module.mkdtemp,
+                    _reports=PROJECT_ROOT / "outputs/reports",
+                    _scratch=PROJECT_ROOT / "tmp/notebook_checks", **kwargs):
+    directory = kwargs.get("dir")
+    if directory is not None and type(_reports)(directory).resolve() == _reports.resolve():
+        _scratch.mkdir(parents=True, exist_ok=True)
+        kwargs["dir"] = _scratch
+    return _original(*args, **kwargs)
+tempfile_module.mkdtemp = scratch_reports
+mkdtemp = scratch_reports
 
 def forbid_training(*args, **kwargs):
     raise AssertionError("Notebook verification must not launch training")
@@ -139,7 +152,8 @@ class NotebookChecks(unittest.TestCase):
             'training_launched': False,
             'test_set_evaluated': False,
         }
-        report = ROOT / 'outputs/reports/notebook_verification.json'
+        # Keep the historical verification artifact; this invocation uses a fresh folder.
+        report = Path(tempfile.mkdtemp(prefix='notebook_verification_', dir=ROOT / 'tmp')) / 'verification.json'
         report.write_text(json.dumps(summary, indent=2) + '\n', encoding='utf-8')
 
     def check_result(self, result):

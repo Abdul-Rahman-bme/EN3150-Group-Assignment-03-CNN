@@ -7,9 +7,62 @@ loads its own files. No notebook cells need to run first.
 The original EuroSAT RGB dataset, saved splits and 12 completed custom CNN experiments
 remain in place. See [my custom CNN validation results](docs/custom_cnn_results.md)
 for all saved configurations, selected epochs, validation metrics and training times.
+Read [my final test results and assignment requirement audit](docs/final_results.md)
+for the four completed final comparisons and remaining submission gaps.
 Browse the [saved-results index](outputs/README.md) for retained reports and the archive log.
 The refactor uses their saved configurations and notebook code
 as the reference. New reports go into fresh folders under `outputs/reports/`.
+
+## Final report names and pretrained stage
+
+In my final report, required standard Model A is existing `model_a`, and required
+final lightweight Model B is existing `model_c`. Existing `model_b` is my initial
+lightweight baseline. I selected `model_c` using validation results; its 46,373
+parameters meet the lightweight model's 100,000 cap. Code identifiers, run folders
+and historical A/B/C labels remain unchanged.
+
+I added MobileNetV2 (`MobileNet_V2_Weights.IMAGENET1K_V2`) and ShuffleNetV2 x0.5
+(`ShuffleNet_V2_X0_5_Weights.IMAGENET1K_V1`). See
+[my selection, preprocessing and run commands](docs/pretrained_model_selection.md)
+and the [synthetic verification evidence](docs/pretrained_verification.json).
+Fresh runs default to `outputs/pretrained_cnn/`; the 12 custom experiment folders
+remain in `outputs/custom_cnn/`. The two saved 30-epoch pretrained runs and four final test reports are now complete.
+This consolidation reads their artifacts without rerunning models.
+
+For these candidates, fresh initialization loads the official ImageNet state
+before replacing its classifier with a new ten-class linear layer. All layers
+are fine-tuned at 64 x 64 using ImageNet normalization, the existing geometric
+augmentation, cross-entropy loss and minimum-validation-loss selection. Adam
+0.0001, weight decay 0.0001, 30 epochs, batch size 64 and seed 42 are the initial
+settings, not a proven optimum. Custom-model preprocessing stays unchanged.
+
+The available source files are local-only under `outputs/pretrained_weights/`.
+Python's automatic download encountered a Windows TLS certificate error; the
+official ShuffleNet file was downloaded with Windows curl and its hash verified.
+Use the documented `--pretrained-weights-file` commands in this environment.
+Fresh initialization stops on download/hash/loading failure and never silently
+uses random weights. Resume and evaluation restore the saved checkpoint without
+reading or downloading an ImageNet source file.
+
+Training configs record the explicit weight enum, official URL and source SHA-256,
+input/normalization/augmentation, split hashes, settings, and post-replacement
+total/trainable parameter and 64-pixel MAC counts. `model_summary.json` records the
+actual saved best-weights and full-resume file sizes in bytes, decimal MB and
+binary MiB. Checkpoint files remain local-only. Evaluation also records model
+cost and the saved weight-file size.
+
+Plot the two new runs after they exist with:
+
+```powershell
+python -m cnn_assignment plot --runs-root outputs/pretrained_cnn
+python -m cnn_assignment plot --additional-runs-root outputs/pretrained_cnn
+```
+
+The second command compares both collections; plotting still reads saved
+histories without importing torch. Existing progress bars, validation, explicit
+final-test evaluation and epoch-boundary resume support these architectures.
+Run `python tests/verify_pretrained_gpu.py --weights-dir outputs/pretrained_weights`
+for the optional synthetic verification; it writes to a fresh folder under `tmp/`.
 
 ## Windows setup
 
@@ -300,14 +353,17 @@ single-run plots are under `outputs/refactor_checks/optimizer_plots/` and
 evaluation, plotting and utility modules. Dataset classes and transform classes
 are importable for Windows worker spawning; zero workers is the default.
 `pyproject.toml` defines packaging and the `cnn-assignment` entry point.
-`test.ipynb` remains the analysis document, with its 79 cells and historical
-outputs preserved. Revised cells import shared code, read completed experiments
+`test.ipynb` remains the analysis document, with historical outputs preserved.
+Its final analysis reads saved reports and histories; section 9.7 records the audit
+and pending dataset-sheet/submission steps. Revised cells import shared code, read completed experiments
 and save recreated plots in a fresh report folder.
 
 `outputs/refactor_checks/` holds the original file-hash manifest and verification
 reports. The manifest's notebook hash records its pre-refactor version; the
 notebook's source was intentionally updated while retaining its outputs. Split
 CSVs and all files under `outputs/custom_cnn/` must still match their hashes.
-Git ignores raw data, caches, environments and binary weights/generated figures.
-Source, the notebook, split CSVs and small config/history/summary files remain
-trackable. Ignoring a file does not delete it or untrack one already in Git.
+Git ignores raw data, caches, environments, weights, resume checkpoints and
+unselected reports. The output index links the selected validation/final test
+reports and figures, and custom/pretrained configs and histories allowlisted
+for sharing. Source, the notebook and split CSVs remain trackable. Ignoring a
+file does not delete it or untrack one already in Git.

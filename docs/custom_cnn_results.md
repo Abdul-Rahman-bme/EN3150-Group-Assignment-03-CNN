@@ -1,5 +1,12 @@
 # My custom CNN validation results
 
+For the final assignment report, required standard Model A is `model_a`, and
+required final lightweight Model B is `model_c` (46,373 parameters, below the
+100,000 cap). Existing `model_b` is my initial lightweight baseline. I selected
+`model_c` using validation results. The tables below retain the historical A/B/C
+labels and saved identifiers; no run or artifact is renamed. See
+[my naming and pretrained selection notes](pretrained_model_selection.md).
+
 I completed 12 custom CNN experiments: four configurations each for Model A (StandardCNN), Model B (LightweightCNN) and Model C (WideLightweightCNN). I read each saved `config.json` and `history.csv` under `outputs/custom_cnn/` and checked the saved validation reports where available. I calculated the values below from these files, rather than from rounded comparison values.
 
 **These are validation results, not test results.** I used validation loss to select checkpoints and configurations. I did not run training or evaluate the test set to prepare this document.

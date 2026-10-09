@@ -45,7 +45,8 @@ def load_config(path):
     for key in required:
         if key not in config:
             raise ValueError(f"Missing {key} in {path}")
-    if config["model"] not in ("model_a", "model_b", "model_c"):
+    from .model_specs import MODEL_NAMES, PRETRAINED_MODELS, PRETRAINED_SPECS, IMAGENET_MEAN, IMAGENET_STD
+    if config["model"] not in MODEL_NAMES:
         raise ValueError("Unsupported saved model architecture")
     names = config["class_names"]
     if len(names) != 10 or len(set(names)) != 10:
@@ -56,6 +57,14 @@ def load_config(path):
         raise ValueError("Expected finite RGB normalization values")
     if any(x <= 0 for x in std) or config.get("input_size", 64) != 64:
         raise ValueError("Expected positive standard deviations and 64 x 64 inputs")
+    if config["model"] in PRETRAINED_MODELS:
+        spec = PRETRAINED_SPECS[config["model"]]
+        if any(config.get(key) != value for key, value in spec.items()):
+            raise ValueError("Saved pretrained weight identifier or source differs from the supported candidate")
+        if mean != IMAGENET_MEAN or std != IMAGENET_STD:
+            raise ValueError("Pretrained candidates require the saved ImageNet normalization")
+        if config.get("fine_tune_all_layers") is not True:
+            raise ValueError("Pretrained candidates must fine-tune all layers")
     return config
 
 

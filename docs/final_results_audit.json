@@ -1,0 +1,803 @@
+{
+  "scope": "Read-only consolidation of saved final reports; no inference",
+  "records": [
+    {
+      "model": "model_a",
+      "name": "Model A (standard)",
+      "report": "outputs/reports/evaluate-test_20261009T051335669280Z",
+      "run_path": "outputs/custom_cnn/model_a_adam_lr0.001",
+      "metrics": {
+        "run": "model_a_adam_lr0.001",
+        "split": "test",
+        "device": "cuda",
+        "class_names": [
+          "AnnualCrop",
+          "Forest",
+          "HerbaceousVegetation",
+          "Highway",
+          "Industrial",
+          "Pasture",
+          "PermanentCrop",
+          "Residential",
+          "River",
+          "SeaLake"
+        ],
+        "loss": 0.1735740179780089,
+        "accuracy": 0.9390123456790124,
+        "seconds": 42.74082809999891,
+        "images": 4050,
+        "macro_precision": 0.9390098907019333,
+        "macro_recall": 0.9370222222222223,
+        "macro_f1": 0.9374906793073041,
+        "zero_division": 0,
+        "total_parameters": 94762,
+        "trainable_parameters": 94762,
+        "estimated_fp32_parameter_bytes": 379048,
+        "estimated_fp32_total_parameter_bytes": 379048,
+        "conv_linear_macs_per_image": 41288960,
+        "mac_input_shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "mac_scope": "Convolution and linear multiply-accumulates only; not measured inference speed",
+        "size_units": {
+          "byte": "8 bits",
+          "MB": "1,000,000 bytes",
+          "MiB": "1,048,576 bytes"
+        },
+        "actual_weights_file_bytes": 387218,
+        "actual_weights_file_MB": 0.387218,
+        "actual_weights_file_MiB": 0.3692798614501953,
+        "weights_sha256": "b7e3e952861f51a78e5e155a96df38f77af0c90e31f5c0564738428cba17528f",
+        "split_sha256": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928",
+        "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized",
+        "input_size": 64,
+        "normalization_mean": [
+          0.3439007467932198,
+          0.37995412567515396,
+          0.40754934092415773
+        ],
+        "normalization_std": [
+          0.20242460536699797,
+          0.13668293748114527,
+          0.11540833375611878
+        ],
+        "evaluation_settings": {
+          "batch_size": 64,
+          "num_workers": 0
+        }
+      },
+      "selected_epoch": 30,
+      "selected_val_loss": 0.17211006972156925,
+      "selected_val_accuracy": 0.9412345679012346,
+      "training_time": {
+        "mean_seconds": 26.77683129666669,
+        "mean_excluding_first_seconds": 25.266525355172455,
+        "median_seconds": 25.246450300000106,
+        "total_minutes": 13.388415648333345
+      },
+      "per_class": [
+        {
+          "class_name": "AnnualCrop",
+          "precision": "0.9591346153846154",
+          "recall": "0.8866666666666667",
+          "f1": "0.9214780600461894",
+          "support": "450"
+        },
+        {
+          "class_name": "Forest",
+          "precision": "0.9718004338394793",
+          "recall": "0.9955555555555555",
+          "f1": "0.9835345773874863",
+          "support": "450"
+        },
+        {
+          "class_name": "HerbaceousVegetation",
+          "precision": "0.8884297520661157",
+          "recall": "0.9555555555555556",
+          "f1": "0.9207708779443255",
+          "support": "450"
+        },
+        {
+          "class_name": "Highway",
+          "precision": "0.9541547277936963",
+          "recall": "0.888",
+          "f1": "0.919889502762431",
+          "support": "375"
+        },
+        {
+          "class_name": "Industrial",
+          "precision": "0.975",
+          "recall": "0.936",
+          "f1": "0.9551020408163265",
+          "support": "375"
+        },
+        {
+          "class_name": "Pasture",
+          "precision": "0.9438943894389439",
+          "recall": "0.9533333333333334",
+          "f1": "0.9485903814262024",
+          "support": "300"
+        },
+        {
+          "class_name": "PermanentCrop",
+          "precision": "0.8564102564102564",
+          "recall": "0.8906666666666667",
+          "f1": "0.8732026143790849",
+          "support": "375"
+        },
+        {
+          "class_name": "Residential",
+          "precision": "0.9468085106382979",
+          "recall": "0.9888888888888889",
+          "f1": "0.9673913043478262",
+          "support": "450"
+        },
+        {
+          "class_name": "River",
+          "precision": "0.907859078590786",
+          "recall": "0.8933333333333333",
+          "f1": "0.9005376344086022",
+          "support": "375"
+        },
+        {
+          "class_name": "SeaLake",
+          "precision": "0.9866071428571429",
+          "recall": "0.9822222222222222",
+          "f1": "0.9844097995545658",
+          "support": "450"
+        }
+      ],
+      "largest_confusions": [
+        {
+          "true_class": "AnnualCrop",
+          "predicted_class": "PermanentCrop",
+          "count": 30,
+          "support": 450,
+          "percent": 6.666666666666667
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "HerbaceousVegetation",
+          "count": 28,
+          "support": 375,
+          "percent": 7.466666666666667
+        },
+        {
+          "true_class": "Industrial",
+          "predicted_class": "Residential",
+          "count": 16,
+          "support": 375,
+          "percent": 4.266666666666667
+        },
+        {
+          "true_class": "Highway",
+          "predicted_class": "PermanentCrop",
+          "count": 12,
+          "support": 375,
+          "percent": 3.2
+        },
+        {
+          "true_class": "Highway",
+          "predicted_class": "River",
+          "count": 10,
+          "support": 375,
+          "percent": 2.6666666666666665
+        }
+      ]
+    },
+    {
+      "model": "model_c",
+      "name": "Model B (final lightweight)",
+      "report": "outputs/reports/evaluate-test_20261009T051430041328Z",
+      "run_path": "outputs/custom_cnn/model_c_adam_lr0.001",
+      "metrics": {
+        "run": "model_c_adam_lr0.001",
+        "split": "test",
+        "device": "cuda",
+        "class_names": [
+          "AnnualCrop",
+          "Forest",
+          "HerbaceousVegetation",
+          "Highway",
+          "Industrial",
+          "Pasture",
+          "PermanentCrop",
+          "Residential",
+          "River",
+          "SeaLake"
+        ],
+        "loss": 0.1799133331981706,
+        "accuracy": 0.9437037037037037,
+        "seconds": 3.463148300001194,
+        "images": 4050,
+        "macro_precision": 0.9422545649814922,
+        "macro_recall": 0.9425111111111111,
+        "macro_f1": 0.9418222291398649,
+        "zero_division": 0,
+        "total_parameters": 46373,
+        "trainable_parameters": 46373,
+        "estimated_fp32_parameter_bytes": 185492,
+        "estimated_fp32_total_parameter_bytes": 185492,
+        "conv_linear_macs_per_image": 18561536,
+        "mac_input_shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "mac_scope": "Convolution and linear multiply-accumulates only; not measured inference speed",
+        "size_units": {
+          "byte": "8 bits",
+          "MB": "1,000,000 bytes",
+          "MiB": "1,048,576 bytes"
+        },
+        "actual_weights_file_bytes": 196521,
+        "actual_weights_file_MB": 0.196521,
+        "actual_weights_file_MiB": 0.18741703033447266,
+        "weights_sha256": "fc6968c4ea8d613098f75b0be9573d28cb5b5b7e9896a62c49c3edcf505889aa",
+        "split_sha256": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928",
+        "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized",
+        "input_size": 64,
+        "normalization_mean": [
+          0.3439007467932198,
+          0.37995412567515396,
+          0.40754934092415773
+        ],
+        "normalization_std": [
+          0.20242460536699797,
+          0.13668293748114527,
+          0.11540833375611878
+        ],
+        "evaluation_settings": {
+          "batch_size": 64,
+          "num_workers": 0
+        }
+      },
+      "selected_epoch": 28,
+      "selected_val_loss": 0.17760855402475523,
+      "selected_val_accuracy": 0.94,
+      "training_time": {
+        "mean_seconds": 30.53237108666605,
+        "mean_excluding_first_seconds": 25.62389479655118,
+        "median_seconds": 23.73600059999444,
+        "total_minutes": 15.266185543333025
+      },
+      "per_class": [
+        {
+          "class_name": "AnnualCrop",
+          "precision": "0.9246119733924612",
+          "recall": "0.9266666666666666",
+          "f1": "0.925638179800222",
+          "support": "450"
+        },
+        {
+          "class_name": "Forest",
+          "precision": "0.9823399558498896",
+          "recall": "0.9888888888888889",
+          "f1": "0.9856035437430787",
+          "support": "450"
+        },
+        {
+          "class_name": "HerbaceousVegetation",
+          "precision": "0.908695652173913",
+          "recall": "0.9288888888888889",
+          "f1": "0.9186813186813187",
+          "support": "450"
+        },
+        {
+          "class_name": "Highway",
+          "precision": "0.9556213017751479",
+          "recall": "0.8613333333333333",
+          "f1": "0.9060308555399719",
+          "support": "375"
+        },
+        {
+          "class_name": "Industrial",
+          "precision": "0.9633507853403142",
+          "recall": "0.9813333333333333",
+          "f1": "0.9722589167767504",
+          "support": "375"
+        },
+        {
+          "class_name": "Pasture",
+          "precision": "0.9127725856697819",
+          "recall": "0.9766666666666667",
+          "f1": "0.9436392914653785",
+          "support": "300"
+        },
+        {
+          "class_name": "PermanentCrop",
+          "precision": "0.92",
+          "recall": "0.8586666666666667",
+          "f1": "0.8882758620689656",
+          "support": "375"
+        },
+        {
+          "class_name": "Residential",
+          "precision": "0.9865771812080537",
+          "recall": "0.98",
+          "f1": "0.9832775919732442",
+          "support": "450"
+        },
+        {
+          "class_name": "River",
+          "precision": "0.8819095477386935",
+          "recall": "0.936",
+          "f1": "0.908150064683053",
+          "support": "375"
+        },
+        {
+          "class_name": "SeaLake",
+          "precision": "0.9866666666666667",
+          "recall": "0.9866666666666667",
+          "f1": "0.9866666666666668",
+          "support": "450"
+        }
+      ],
+      "largest_confusions": [
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "HerbaceousVegetation",
+          "count": 25,
+          "support": 375,
+          "percent": 6.666666666666667
+        },
+        {
+          "true_class": "Highway",
+          "predicted_class": "River",
+          "count": 20,
+          "support": 375,
+          "percent": 5.333333333333333
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "AnnualCrop",
+          "count": 12,
+          "support": 375,
+          "percent": 3.2
+        },
+        {
+          "true_class": "AnnualCrop",
+          "predicted_class": "PermanentCrop",
+          "count": 10,
+          "support": 450,
+          "percent": 2.2222222222222223
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "River",
+          "count": 9,
+          "support": 375,
+          "percent": 2.4
+        }
+      ]
+    },
+    {
+      "model": "mobilenet_v2",
+      "name": "MobileNetV2",
+      "report": "outputs/reports/evaluate-test_20261009T051445171381Z",
+      "run_path": "outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1",
+      "metrics": {
+        "run": "mobilenet_v2_adam_lr0.0001_initial1",
+        "split": "test",
+        "device": "cuda",
+        "class_names": [
+          "AnnualCrop",
+          "Forest",
+          "HerbaceousVegetation",
+          "Highway",
+          "Industrial",
+          "Pasture",
+          "PermanentCrop",
+          "Residential",
+          "River",
+          "SeaLake"
+        ],
+        "loss": 0.05591331948100785,
+        "accuracy": 0.9812345679012345,
+        "seconds": 4.113200299998425,
+        "images": 4050,
+        "macro_precision": 0.9811211263792344,
+        "macro_recall": 0.9794888888888889,
+        "macro_f1": 0.9802460709122889,
+        "zero_division": 0,
+        "total_parameters": 2236682,
+        "trainable_parameters": 2236682,
+        "estimated_fp32_parameter_bytes": 8946728,
+        "estimated_fp32_total_parameter_bytes": 8946728,
+        "conv_linear_macs_per_image": 24461312,
+        "mac_input_shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "mac_scope": "Convolution and linear multiply-accumulates only; not measured inference speed",
+        "size_units": {
+          "byte": "8 bits",
+          "MB": "1,000,000 bytes",
+          "MiB": "1,048,576 bytes"
+        },
+        "actual_weights_file_bytes": 9180270,
+        "actual_weights_file_MB": 9.18027,
+        "actual_weights_file_MiB": 8.754987716674805,
+        "weights_sha256": "525601eb971f9500417184653748ff17a551964d7780c29c5689801aeb0c160b",
+        "split_sha256": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928",
+        "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized",
+        "input_size": 64,
+        "normalization_mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "normalization_std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "evaluation_settings": {
+          "batch_size": 64,
+          "num_workers": 0
+        },
+        "pretrained_weights": "MobileNet_V2_Weights.IMAGENET1K_V2",
+        "pretrained_source": "https://download.pytorch.org/models/mobilenet_v2-7ebf99e0.pth",
+        "pretrained_source_sha256": "7ebf99e03e254b273379b23edca7ec0da9f48273b23a332b93c1c99d49e86e8f",
+        "fine_tune_all_layers": true
+      },
+      "selected_epoch": 27,
+      "selected_val_loss": 0.05709803883032298,
+      "selected_val_accuracy": 0.980246913580247,
+      "training_time": {
+        "mean_seconds": 42.15793806333355,
+        "mean_excluding_first_seconds": 36.505410586207105,
+        "median_seconds": 32.867405200000576,
+        "total_minutes": 21.078969031666777
+      },
+      "per_class": [
+        {
+          "class_name": "AnnualCrop",
+          "precision": "0.9692307692307692",
+          "recall": "0.98",
+          "f1": "0.9745856353591159",
+          "support": "450"
+        },
+        {
+          "class_name": "Forest",
+          "precision": "0.9868131868131869",
+          "recall": "0.9977777777777778",
+          "f1": "0.9922651933701657",
+          "support": "450"
+        },
+        {
+          "class_name": "HerbaceousVegetation",
+          "precision": "0.9758241758241758",
+          "recall": "0.9866666666666667",
+          "f1": "0.9812154696132597",
+          "support": "450"
+        },
+        {
+          "class_name": "Highway",
+          "precision": "0.9811827956989247",
+          "recall": "0.9733333333333334",
+          "f1": "0.9772423025435074",
+          "support": "375"
+        },
+        {
+          "class_name": "Industrial",
+          "precision": "0.989159891598916",
+          "recall": "0.9733333333333334",
+          "f1": "0.9811827956989246",
+          "support": "375"
+        },
+        {
+          "class_name": "Pasture",
+          "precision": "0.9726962457337884",
+          "recall": "0.95",
+          "f1": "0.9612141652613828",
+          "support": "300"
+        },
+        {
+          "class_name": "PermanentCrop",
+          "precision": "0.9780821917808219",
+          "recall": "0.952",
+          "f1": "0.9648648648648648",
+          "support": "375"
+        },
+        {
+          "class_name": "Residential",
+          "precision": "0.9782135076252724",
+          "recall": "0.9977777777777778",
+          "f1": "0.9878987898789879",
+          "support": "450"
+        },
+        {
+          "class_name": "River",
+          "precision": "0.9866310160427807",
+          "recall": "0.984",
+          "f1": "0.9853137516688919",
+          "support": "375"
+        },
+        {
+          "class_name": "SeaLake",
+          "precision": "0.9933774834437086",
+          "recall": "1.0",
+          "f1": "0.9966777408637874",
+          "support": "450"
+        }
+      ],
+      "largest_confusions": [
+        {
+          "true_class": "Industrial",
+          "predicted_class": "Residential",
+          "count": 7,
+          "support": 375,
+          "percent": 1.8666666666666667
+        },
+        {
+          "true_class": "Pasture",
+          "predicted_class": "AnnualCrop",
+          "count": 7,
+          "support": 300,
+          "percent": 2.3333333333333335
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "AnnualCrop",
+          "count": 6,
+          "support": 375,
+          "percent": 1.6
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "HerbaceousVegetation",
+          "count": 5,
+          "support": 375,
+          "percent": 1.3333333333333333
+        },
+        {
+          "true_class": "AnnualCrop",
+          "predicted_class": "Pasture",
+          "count": 4,
+          "support": 450,
+          "percent": 0.8888888888888888
+        }
+      ]
+    },
+    {
+      "model": "shufflenet_v2_x0_5",
+      "name": "ShuffleNetV2 x0.5",
+      "report": "outputs/reports/evaluate-test_20261009T051458714369Z",
+      "run_path": "outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1",
+      "metrics": {
+        "run": "shufflenet_v2_x0_5_adam_lr0.0001_initial1",
+        "split": "test",
+        "device": "cuda",
+        "class_names": [
+          "AnnualCrop",
+          "Forest",
+          "HerbaceousVegetation",
+          "Highway",
+          "Industrial",
+          "Pasture",
+          "PermanentCrop",
+          "Residential",
+          "River",
+          "SeaLake"
+        ],
+        "loss": 0.10020005093312558,
+        "accuracy": 0.9637037037037037,
+        "seconds": 3.7112422000027436,
+        "images": 4050,
+        "macro_precision": 0.9621119868608712,
+        "macro_recall": 0.9623111111111111,
+        "macro_f1": 0.9621364128537551,
+        "zero_division": 0,
+        "total_parameters": 352042,
+        "trainable_parameters": 352042,
+        "estimated_fp32_parameter_bytes": 1408168,
+        "estimated_fp32_total_parameter_bytes": 1408168,
+        "conv_linear_macs_per_image": 3230848,
+        "mac_input_shape": [
+          1,
+          3,
+          64,
+          64
+        ],
+        "mac_scope": "Convolution and linear multiply-accumulates only; not measured inference speed",
+        "size_units": {
+          "byte": "8 bits",
+          "MB": "1,000,000 bytes",
+          "MiB": "1,048,576 bytes"
+        },
+        "actual_weights_file_bytes": 1542078,
+        "actual_weights_file_MB": 1.542078,
+        "actual_weights_file_MiB": 1.4706401824951172,
+        "weights_sha256": "719b8707b810b882f6538d1ce469724d2ab491caadd93d240798b44a01a37e1c",
+        "split_sha256": "6902f9b300a12d30bd6aeffd2432f9dee36efb7083f7237c78db35121a460928",
+        "timing_scope": "Full inference pass including loading, transfers, loss and prediction collection; CUDA synchronized",
+        "input_size": 64,
+        "normalization_mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "normalization_std": [
+          0.229,
+          0.224,
+          0.225
+        ],
+        "evaluation_settings": {
+          "batch_size": 64,
+          "num_workers": 0
+        },
+        "pretrained_weights": "ShuffleNet_V2_X0_5_Weights.IMAGENET1K_V1",
+        "pretrained_source": "https://download.pytorch.org/models/shufflenetv2_x0.5-f707e7126e.pth",
+        "pretrained_source_sha256": "f707e7126e8601ea5fa0e272e0f35c52807773d603bcb11e611fa04a0b0880fd",
+        "fine_tune_all_layers": true
+      },
+      "selected_epoch": 29,
+      "selected_val_loss": 0.11294783648149467,
+      "selected_val_accuracy": 0.9619753086419753,
+      "training_time": {
+        "mean_seconds": 37.263938253333194,
+        "mean_excluding_first_seconds": 31.275347793103343,
+        "median_seconds": 25.879357800000435,
+        "total_minutes": 18.631969126666597
+      },
+      "per_class": [
+        {
+          "class_name": "AnnualCrop",
+          "precision": "0.9510022271714922",
+          "recall": "0.9488888888888889",
+          "f1": "0.949944382647386",
+          "support": "450"
+        },
+        {
+          "class_name": "Forest",
+          "precision": "0.9781181619256017",
+          "recall": "0.9933333333333333",
+          "f1": "0.9856670341786108",
+          "support": "450"
+        },
+        {
+          "class_name": "HerbaceousVegetation",
+          "precision": "0.96",
+          "recall": "0.96",
+          "f1": "0.96",
+          "support": "450"
+        },
+        {
+          "class_name": "Highway",
+          "precision": "0.9287598944591029",
+          "recall": "0.9386666666666666",
+          "f1": "0.9336870026525199",
+          "support": "375"
+        },
+        {
+          "class_name": "Industrial",
+          "precision": "0.9813333333333333",
+          "recall": "0.9813333333333333",
+          "f1": "0.9813333333333333",
+          "support": "375"
+        },
+        {
+          "class_name": "Pasture",
+          "precision": "0.9385113268608414",
+          "recall": "0.9666666666666667",
+          "f1": "0.9523809523809523",
+          "support": "300"
+        },
+        {
+          "class_name": "PermanentCrop",
+          "precision": "0.9322493224932249",
+          "recall": "0.9173333333333333",
+          "f1": "0.924731182795699",
+          "support": "375"
+        },
+        {
+          "class_name": "Residential",
+          "precision": "0.991130820399113",
+          "recall": "0.9933333333333333",
+          "f1": "0.9922308546059933",
+          "support": "450"
+        },
+        {
+          "class_name": "River",
+          "precision": "0.9666666666666667",
+          "recall": "0.928",
+          "f1": "0.9469387755102041",
+          "support": "375"
+        },
+        {
+          "class_name": "SeaLake",
+          "precision": "0.9933481152993349",
+          "recall": "0.9955555555555555",
+          "f1": "0.9944506104328523",
+          "support": "450"
+        }
+      ],
+      "largest_confusions": [
+        {
+          "true_class": "River",
+          "predicted_class": "Highway",
+          "count": 15,
+          "support": 375,
+          "percent": 4.0
+        },
+        {
+          "true_class": "PermanentCrop",
+          "predicted_class": "HerbaceousVegetation",
+          "count": 13,
+          "support": 375,
+          "percent": 3.466666666666667
+        },
+        {
+          "true_class": "AnnualCrop",
+          "predicted_class": "PermanentCrop",
+          "count": 12,
+          "support": 450,
+          "percent": 2.6666666666666665
+        },
+        {
+          "true_class": "Highway",
+          "predicted_class": "PermanentCrop",
+          "count": 9,
+          "support": 375,
+          "percent": 2.4
+        },
+        {
+          "true_class": "AnnualCrop",
+          "predicted_class": "Pasture",
+          "count": 8,
+          "support": 450,
+          "percent": 1.7777777777777777
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix.csv": "5d4964a5dab155590b52577ec5f3ae6c91e75c1f14f1803eb9a2bd653428ddbb",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix.png": "5035e804d544beaf786e22008d553bfd1a4ddafd14ac084d69f7e71c11c36074",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.csv": "20261ac2455d8defe8c163e9ae45bcf8aa2b29d78b50296c43b3e66c40046ce8",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.png": "ac784df4c385ac6e42df88672e5942e736e77d18e964343f47178b8b8d2d3ac3",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/metrics.json": "a44a2b30128fe4be95f75d8e347fe495edd2cda3aab8f091f0c1fe933794f065",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/per_class_metrics.csv": "70ef55cbb550ef9998bb301eafcff554aca44ec0993209f6d223a5c5cd357413",
+    "outputs/reports/evaluate-test_20261009T051335669280Z/predictions.csv": "952bb4fc7074455bc390a78595fc8d4dc3a7e9c50ab41f2f37b19ec54f93fa3a",
+    "outputs/custom_cnn/model_a_adam_lr0.001/config.json": "a8234339641f7946c7ccd7426c3f07a6beaa70bf31985c7807d10482fed0e42d",
+    "outputs/custom_cnn/model_a_adam_lr0.001/history.csv": "fc59a0b31d4d112e3a8aaf613abb75618171618a9e30d8878237bbdaed57eb64",
+    "outputs/custom_cnn/model_a_adam_lr0.001/best_weights.pt": "b7e3e952861f51a78e5e155a96df38f77af0c90e31f5c0564738428cba17528f",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix.csv": "47f9ca36ae151bb0f62b8dc0ed574d3689440fdc4f027d26219510f2e0891140",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix.png": "3179ab53fc6e83c70fc28d05adc674e002d2e274a1a62ad0384c6ca76f34c480",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.csv": "7c0e99f92abd2718cad1bd7cde2d74d1b85097be132fbd9d2eb4573e0da3d3b1",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.png": "5900032eff6b3b538d7f92bf394b15a9508f05d56d271c3e177cf23b17c6419c",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/metrics.json": "367dec8a72833214ba38f87b54454664d138a118100ab2f8ecec52d4e8971a1f",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/per_class_metrics.csv": "2e5bf9000e5b378a387ab8127b66f398301754b20802ba9efa508b0d94bd9206",
+    "outputs/reports/evaluate-test_20261009T051430041328Z/predictions.csv": "1ef707cac07cf81d448058a352bcbf962665aa3594b214c17451692147a81c9d",
+    "outputs/custom_cnn/model_c_adam_lr0.001/config.json": "e1d477ed190745cbed7c31a6858418c9b2d8494e2b9d00431699b2dc7191da0f",
+    "outputs/custom_cnn/model_c_adam_lr0.001/history.csv": "43c5bdb1a7855a6cb5720314f5e1e509c807bd28fd4120d101904be6cefd2a34",
+    "outputs/custom_cnn/model_c_adam_lr0.001/best_weights.pt": "fc6968c4ea8d613098f75b0be9573d28cb5b5b7e9896a62c49c3edcf505889aa",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix.csv": "bc9df27ed41fe7fe10134fcd3ee290bfbc091e54648a0bd511ce7cb9cadb0e69",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix.png": "de984e17a0c80a3007ed53cd9004e59177a3a4cb349e0f54c5b260ffb23c3a6f",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.csv": "75b05500ac7a020e7aca4bf94fb3dddb541b877f13034332ad3bbde3528f15c7",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.png": "fe64e2fa3d65fd0a7c9488a84f199afb4f41507a0a5fa936e4ad349e25d1d0a8",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/metrics.json": "bc8c7b9f66da9874058da3d81f78d86feb889bae3dfb29e30491cc20b91add51",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/per_class_metrics.csv": "ae65d793ed96b4b6cd3d5fd195058c23fb969ecf21938dd4e73ede1d98df8c77",
+    "outputs/reports/evaluate-test_20261009T051445171381Z/predictions.csv": "64749aa68fa6e016cea08a9bd9f1f13711cb4f09139917c58fc83f300bb0c267",
+    "outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/config.json": "5bb39af7e385b05c619221afc9ce7fec290b742617c47a1410e2a9c0e76dbf47",
+    "outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/history.csv": "8a9b03aaeba14b31589c5c19f24bce0a12018ba1b7731d1b9ae111bc3683029d",
+    "outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/best_weights.pt": "525601eb971f9500417184653748ff17a551964d7780c29c5689801aeb0c160b",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix.csv": "b0f6ca29b070b1a9125b136856090d863d82feaef6acfa94ebabe2f8935b8377",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix.png": "b136108e36188addb0e925ffbcda5f6ef05b8e727f66d8dad2c3b342c3aaa13a",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.csv": "4ce2040f38b958fe2bc240834bd17a4c5656b361205e640c9fc5cc30d129d00d",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.png": "53784682fa845c6fac76228c62556f4258973b26594bf72ea463ae8051a91c97",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/metrics.json": "664b2b9090b3b7bb53efe47edce4f5e16d222e5ececca5c97a3ec786cba4cb87",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/per_class_metrics.csv": "b17209dcd3a4dc00738351af56951a7b14a0c2c976a1cf1fe62c8eea6979a96c",
+    "outputs/reports/evaluate-test_20261009T051458714369Z/predictions.csv": "f0d54d727243ee0957c2072a94776db285abe05b8495049333687525196344dd",
+    "outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/config.json": "143f0ab4ecee8789faa9ce608e29e4c42a382f1e4c31ce508e714d7e138a06e4",
+    "outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv": "3f19bafe18bac4df7f8e81dc028cfcf3649be5b40784f05b216d3c0509eee93e",
+    "outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/best_weights.pt": "719b8707b810b882f6538d1ce469724d2ab491caadd93d240798b44a01a37e1c"
+  }
+}

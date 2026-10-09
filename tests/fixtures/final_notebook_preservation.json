@@ -133,10 +133,5 @@
     "ab27f52e": "35c2e1191b0c81eb79ed84ed53c3acad573ca081232103ee8a6fe0d75b5dbab6",
     "164fe31b": "189e1a4ef0fabb36b4a6c984069b2aa537e43da17e17a002fa090c17f852414a"
   },
-  "optional_cell_ids": [
-    "88b33705",
-    "f3ea4cc7"
-  ],
-  "optional_cells_reason": "Obsolete section 7.20 and its code cell were intentionally removed.",
-  "provenance": "Supplied 113-cell notebook before final-results consolidation on 2026-10-09. Prior fixture differences are recorded in notebook_preservation_audit.md; all supplied outputs and metadata are preserved."
+  "provenance": "All 113 supplied notebook cells before final-results consolidation; freezes outputs, IDs, execution counts and metadata. Source-only helper repair is permitted."
 }

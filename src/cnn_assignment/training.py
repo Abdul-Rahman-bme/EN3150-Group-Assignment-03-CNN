@@ -12,7 +12,8 @@ import torch
 from torch import nn
 from tqdm.auto import tqdm
 from .data import check_splits, load_split, make_loader, split_fingerprints
-from .models import build_model
+from .models import build_model, load_saved_state, model_cost
+from .model_specs import PRETRAINED_MODELS, pretrained_settings
 from .transforms import make_transform
 from .utils import (atomic_torch_save, capture_random_state, load_config, portable_path,
                     resolve_path, restore_random_state, seed_everything, select_device, write_json)
@@ -82,16 +83,36 @@ def completed_run(folder):
     if not all((folder / name).is_file() for name in ("config.json", "history.csv", "best_weights.pt")):
         return False
     config = load_config(folder / "config.json")
+    if config["model"] in PRETRAINED_MODELS and not (folder / "model_summary.json").is_file():
+        return False
     history = pd.read_csv(folder / "history.csv")
     return history["epoch"].tolist() == list(range(1, config["epochs"] + 1))
+
+
+def save_pretrained_summary(folder, config):
+    """Record measured serialized sizes without altering the immutable run config."""
+    if config["model"] not in PRETRAINED_MODELS:
+        return
+    summary = {**config["model_cost"], "model": config["model"],
+               "pretrained_weights": config["pretrained_weights"],
+               "pretrained_source": config["pretrained_source"],
+               "size_scope": "Saved best state dictionary includes BatchNorm buffers and serialization overhead; resume file also includes optimizer and RNG states"}
+    for filename, prefix in (("best_weights.pt", "actual_weights"), ("last_checkpoint.pt", "last_checkpoint")):
+        size = (folder / filename).stat().st_size
+        summary.update({f"{prefix}_file_bytes": size, f"{prefix}_file_MB": size / 1_000_000,
+                        f"{prefix}_file_MiB": size / 1_048_576})
+    write_json(folder / "model_summary.json", summary)
 
 
 def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_name=None,
           config_path=None, output_root=None, data_root=None, split_dir=None,
           epochs=30, batch_size=64, seed=42, weight_decay=1e-4, num_workers=0,
-          device_name="auto", skip_existing=False, resume=None, progress=True):
+          device_name="auto", skip_existing=False, resume=None, progress=True,
+          pretrained_weights_file=None):
     device = select_device(device_name)
     if resume is not None:
+        if pretrained_weights_file is not None:
+            raise ValueError("Resume restores saved weights; do not supply an ImageNet source weights file")
         folder = resolve_path(root, resume)
         last_path = folder / "last_checkpoint.pt"
         if not last_path.is_file():
@@ -116,13 +137,17 @@ def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_nam
         if (epochs <= 0 or batch_size <= 0 or num_workers < 0 or not np.isfinite(weight_decay)
                 or weight_decay < 0 or not 0 <= seed < 2**32):
             raise ValueError("Invalid epoch, batch, worker or weight-decay setting")
-        lr = lr if lr is not None else (0.001 if optimizer_name == "adam" else 0.01)
+        if pretrained_weights_file is not None and model_name not in PRETRAINED_MODELS:
+            raise ValueError("--pretrained-weights-file only applies to pretrained candidates")
+        lr = lr if lr is not None else ((0.0001 if model_name in PRETRAINED_MODELS else 0.001)
+                                       if optimizer_name == "adam" else 0.01)
         if not np.isfinite(lr) or lr <= 0:
             raise ValueError("Learning rate must be positive and finite")
         run_name = run_name or f"{model_name}_{optimizer_name}_lr{lr:g}"
         if run_name in ("", ".", "..") or any(c in run_name for c in "/\\:"):
             raise ValueError("Run name must be a single folder name")
-        folder = resolve_path(root, output_root or "outputs/custom_cnn") / run_name
+        default_output = "outputs/pretrained_cnn" if model_name in PRETRAINED_MODELS else "outputs/custom_cnn"
+        folder = resolve_path(root, output_root or default_output) / run_name
         if folder.exists():
             if skip_existing and completed_run(folder):
                 print(f"Skipping completed run: {folder}")
@@ -145,8 +170,13 @@ def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_nam
                       augmentation=["horizontal_flip_p0.5", "vertical_flip_p0.5", "random_quarter_turn"],
                       format_version=1, python_version=platform.python_version(),
                       environment={name: version(name) for name in ("torch", "torchvision", "numpy", "Pillow")})
+        if model_name in PRETRAINED_MODELS:
+            config.update(pretrained_settings(model_name))
     check_splits(split_dir, config["class_names"])
     fingerprints = split_fingerprints(split_dir)
+    if not resume and config["model"] in PRETRAINED_MODELS:
+        if fingerprints != split_fingerprints(resolve_path(root, "data/splits")):
+            raise ValueError("Pretrained runs must reuse the exact original saved splits")
     if resume and fingerprints != config["split_sha256"]:
         raise ValueError("Saved splits changed since this run started")
     config["split_sha256"] = fingerprints
@@ -163,11 +193,15 @@ def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_nam
                                generator=generator, num_workers=num_workers)
     val_loader = make_loader(val_frame, data_root, make_transform(config), config["batch_size"],
                              device, num_workers=num_workers)
-    model = build_model(config["model"], len(config["class_names"])).to(device)
+    model = build_model(config["model"], len(config["class_names"]),
+                        pretrained=not resume and config["model"] in PRETRAINED_MODELS,
+                        pretrained_weights_file=(resolve_path(root, pretrained_weights_file)
+                                                  if pretrained_weights_file is not None else None),
+                        progress=progress).to(device)
     optimizer = make_optimizer(model, config)
     criterion = nn.CrossEntropyLoss()
     if resume:
-        model.load_state_dict(last["model_state"])
+        load_saved_state(model, last["model_state"])
         optimizer.load_state_dict(last["optimizer_state"])
         history = last["history"]
         best = last["best_result"]
@@ -177,7 +211,11 @@ def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_nam
         # Repair artifacts from an interrupted write using the canonical last checkpoint.
         save_history(history, folder / "history.csv")
         atomic_torch_save(best_state, folder / "best_weights.pt")
+        save_pretrained_summary(folder, config)
     else:
+        if config["model"] in PRETRAINED_MODELS:
+            config.update(model.pretrained_initialization)
+            config["model_cost"] = model_cost(model)
         folder.mkdir(parents=True, exist_ok=False)
         write_json(folder / "config.json", config)
         history, best, best_state, start_epoch = [], {"loss": float("inf"), "epoch": None}, None, 1
@@ -201,6 +239,7 @@ def train(root, *, model_name="model_a", optimizer_name="adam", lr=None, run_nam
         if improved:
             atomic_torch_save(best_state, folder / "best_weights.pt")
         save_history(history, folder / "history.csv")
+        save_pretrained_summary(folder, config)
         print(f"Epoch {epoch:02d}/{config['epochs']} | train loss {train_metrics['loss']:.4f}, "
               f"acc {100 * train_metrics['accuracy']:.2f}% | val loss {val_metrics['loss']:.4f}, "
               f"acc {100 * val_metrics['accuracy']:.2f}% | train {train_metrics['seconds']:.1f}s, "

@@ -1,6 +1,32 @@
-# Shared custom CNN results
+# Shared CNN assignment results
 
-I share the saved configs, histories, selected validation reports and plots listed here. The [custom CNN discussion](../docs/custom_cnn_results.md) gives exact checkpoint metrics, training-time means, parameter counts and MACs. These are validation results, not test results. Accuracy comes from the minimum-validation-loss epoch.
+I share the saved configs, histories, selected validation and final test reports, and plots listed here. The [custom CNN discussion](../docs/custom_cnn_results.md) gives validation metrics, training-time means, parameter counts and MACs. The [final results](../docs/final_results.md) separately report test metrics. Checkpoints were selected using minimum validation loss.
+
+For the final assignment report, required standard Model A is `model_a`, and
+required final lightweight Model B is `model_c` (46,373 parameters, below the
+100,000 cap). Existing `model_b` is the initial lightweight baseline. Historical
+A/B/C labels remain unchanged. I describe the two new candidates in
+[my pretrained selection notes](../docs/pretrained_model_selection.md), with
+[synthetic GPU verification evidence](../docs/pretrained_verification.json).
+Both selected pretrained runs are complete. I share their configs, histories and
+model summaries below; their weights and resume checkpoints remain local-only.
+Original ImageNet source files in `pretrained_weights/` remain ignored.
+
+## Final test results and selected pretrained runs
+
+I consolidate the four saved test reports in [my final results](../docs/final_results.md), with a [full-precision saved-file audit](../docs/final_results_audit.json). No model was rerun during consolidation. Dataset-sheet completion and the final PDF/code submission remain pending confirmation. All seven files in each selected test report are allowlisted for sharing.
+
+- **Model A (standard)**: [metrics.json](reports/evaluate-test_20261009T051335669280Z/metrics.json), [per_class_metrics.csv](reports/evaluate-test_20261009T051335669280Z/per_class_metrics.csv), [confusion_matrix.csv](reports/evaluate-test_20261009T051335669280Z/confusion_matrix.csv), [confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.csv), [confusion_matrix.png](reports/evaluate-test_20261009T051335669280Z/confusion_matrix.png), [confusion_matrix_normalized.png](reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.png), [predictions.csv](reports/evaluate-test_20261009T051335669280Z/predictions.csv).
+
+- **Model B (final lightweight)**: [metrics.json](reports/evaluate-test_20261009T051430041328Z/metrics.json), [per_class_metrics.csv](reports/evaluate-test_20261009T051430041328Z/per_class_metrics.csv), [confusion_matrix.csv](reports/evaluate-test_20261009T051430041328Z/confusion_matrix.csv), [confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.csv), [confusion_matrix.png](reports/evaluate-test_20261009T051430041328Z/confusion_matrix.png), [confusion_matrix_normalized.png](reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.png), [predictions.csv](reports/evaluate-test_20261009T051430041328Z/predictions.csv).
+
+- **MobileNetV2**: [metrics.json](reports/evaluate-test_20261009T051445171381Z/metrics.json), [per_class_metrics.csv](reports/evaluate-test_20261009T051445171381Z/per_class_metrics.csv), [confusion_matrix.csv](reports/evaluate-test_20261009T051445171381Z/confusion_matrix.csv), [confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.csv), [confusion_matrix.png](reports/evaluate-test_20261009T051445171381Z/confusion_matrix.png), [confusion_matrix_normalized.png](reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.png), [predictions.csv](reports/evaluate-test_20261009T051445171381Z/predictions.csv).
+
+  Shared run sources: [config.json](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/config.json), [history.csv](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/history.csv), [model_summary.json](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/model_summary.json). Local-only weights: `pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/best_weights.pt`; local-only resume: `pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/last_checkpoint.pt`.
+
+- **ShuffleNetV2 x0.5**: [metrics.json](reports/evaluate-test_20261009T051458714369Z/metrics.json), [per_class_metrics.csv](reports/evaluate-test_20261009T051458714369Z/per_class_metrics.csv), [confusion_matrix.csv](reports/evaluate-test_20261009T051458714369Z/confusion_matrix.csv), [confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.csv), [confusion_matrix.png](reports/evaluate-test_20261009T051458714369Z/confusion_matrix.png), [confusion_matrix_normalized.png](reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.png), [predictions.csv](reports/evaluate-test_20261009T051458714369Z/predictions.csv).
+
+  Shared run sources: [config.json](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/config.json), [history.csv](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv), [model_summary.json](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/model_summary.json). Local-only weights: `pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/best_weights.pt`; local-only resume: `pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/last_checkpoint.pt`.
 
 ## Start here
 
@@ -130,14 +156,18 @@ The CLI reads runs from `outputs/custom_cnn/` and creates fresh timestamped repo
 
 ## Proposed shared files and sizes
 
-This inventory lists the 111 result/documentation files made eligible for Git. Sizes are saved-file bytes, not estimated Git compression. Existing tracked `.gitignore` and the project-level `README.md` are outside this result inventory.
+This inventory lists the 149 selected result/documentation files eligible for Git, including the final reports, pretrained histories and saved-file audit. Sizes are saved-file bytes, not Git compression. Project-level `README.md`, `.gitignore`, source, tests and the notebook are outside this result inventory.
 
-**Total: 111 files, 5,944,091 bytes (5.669 MiB).**
+**Total: 149 files, 8,303,835 bytes (7.919 MiB).**
 
 | Shared file (relative to the project root) | Bytes |
 | --- | ---: |
-| [docs/custom_cnn_results.md](../docs/custom_cnn_results.md) | 14,565 |
-| [outputs/README.md](README.md) | 35,147 |
+| [docs/custom_cnn_results.md](../docs/custom_cnn_results.md) | 15,029 |
+| [docs/final_results.md](../docs/final_results.md) | 25,581 |
+| [docs/final_results_audit.json](../docs/final_results_audit.json) | 30,199 |
+| [docs/pretrained_model_selection.md](../docs/pretrained_model_selection.md) | 13,067 |
+| [docs/pretrained_verification.json](../docs/pretrained_verification.json) | 6,145 |
+| [outputs/README.md](README.md) | 46,076 |
 | [outputs/custom_cnn/model_a_adam_lr0.001/config.json](custom_cnn/model_a_adam_lr0.001/config.json) | 630 |
 | [outputs/custom_cnn/model_a_adam_lr0.001/history.csv](custom_cnn/model_a_adam_lr0.001/history.csv) | 3,793 |
 | [outputs/custom_cnn/model_a_sgd_lr0.003/config.json](custom_cnn/model_a_sgd_lr0.003/config.json) | 1,395 |
@@ -162,7 +192,41 @@ This inventory lists the 111 result/documentation files made eligible for Git. S
 | [outputs/custom_cnn/model_c_sgd_lr0.01/history.csv](custom_cnn/model_c_sgd_lr0.01/history.csv) | 3,710 |
 | [outputs/custom_cnn/model_c_sgd_momentum_lr0.01/config.json](custom_cnn/model_c_sgd_momentum_lr0.01/config.json) | 1,425 |
 | [outputs/custom_cnn/model_c_sgd_momentum_lr0.01/history.csv](custom_cnn/model_c_sgd_momentum_lr0.01/history.csv) | 3,773 |
+| [outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/config.json](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/config.json) | 2,406 |
+| [outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/history.csv](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/history.csv) | 3,812 |
+| [outputs/pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/model_summary.json](pretrained_cnn/mobilenet_v2_adam_lr0.0001_initial1/model_summary.json) | 1,080 |
+| [outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/config.json](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/config.json) | 2,428 |
+| [outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv) | 3,814 |
+| [outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/model_summary.json](pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/model_summary.json) | 1,094 |
 | [outputs/refactor_checks/validation_model_a_sgd/metrics.json](refactor_checks/validation_model_a_sgd/metrics.json) | 1,348 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix.csv](reports/evaluate-test_20261009T051335669280Z/confusion_matrix.csv) | 460 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix.png](reports/evaluate-test_20261009T051335669280Z/confusion_matrix.png) | 115,580 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.csv) | 1,570 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.png](reports/evaluate-test_20261009T051335669280Z/confusion_matrix_normalized.png) | 125,439 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/metrics.json](reports/evaluate-test_20261009T051335669280Z/metrics.json) | 1,765 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/per_class_metrics.csv](reports/evaluate-test_20261009T051335669280Z/per_class_metrics.csv) | 725 |
+| [outputs/reports/evaluate-test_20261009T051335669280Z/predictions.csv](reports/evaluate-test_20261009T051335669280Z/predictions.csv) | 326,811 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix.csv](reports/evaluate-test_20261009T051430041328Z/confusion_matrix.csv) | 458 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix.png](reports/evaluate-test_20261009T051430041328Z/confusion_matrix.png) | 112,685 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.csv) | 1,480 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.png](reports/evaluate-test_20261009T051430041328Z/confusion_matrix_normalized.png) | 122,990 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/metrics.json](reports/evaluate-test_20261009T051430041328Z/metrics.json) | 1,766 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/per_class_metrics.csv](reports/evaluate-test_20261009T051430041328Z/per_class_metrics.csv) | 722 |
+| [outputs/reports/evaluate-test_20261009T051430041328Z/predictions.csv](reports/evaluate-test_20261009T051430041328Z/predictions.csv) | 326,317 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix.csv](reports/evaluate-test_20261009T051445171381Z/confusion_matrix.csv) | 454 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix.png](reports/evaluate-test_20261009T051445171381Z/confusion_matrix.png) | 109,513 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.csv) | 1,231 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.png](reports/evaluate-test_20261009T051445171381Z/confusion_matrix_normalized.png) | 116,366 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/metrics.json](reports/evaluate-test_20261009T051445171381Z/metrics.json) | 1,987 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/per_class_metrics.csv](reports/evaluate-test_20261009T051445171381Z/per_class_metrics.csv) | 696 |
+| [outputs/reports/evaluate-test_20261009T051445171381Z/predictions.csv](reports/evaluate-test_20261009T051445171381Z/predictions.csv) | 325,749 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix.csv](reports/evaluate-test_20261009T051458714369Z/confusion_matrix.csv) | 457 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix.png](reports/evaluate-test_20261009T051458714369Z/confusion_matrix.png) | 112,122 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.csv](reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.csv) | 1,384 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.png](reports/evaluate-test_20261009T051458714369Z/confusion_matrix_normalized.png) | 121,083 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/metrics.json](reports/evaluate-test_20261009T051458714369Z/metrics.json) | 2,006 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/per_class_metrics.csv](reports/evaluate-test_20261009T051458714369Z/per_class_metrics.csv) | 708 |
+| [outputs/reports/evaluate-test_20261009T051458714369Z/predictions.csv](reports/evaluate-test_20261009T051458714369Z/predictions.csv) | 326,201 |
 | [outputs/reports/notebook_adam_comparison_24vnjhbr/optimizer_comparison.csv](reports/notebook_adam_comparison_24vnjhbr/optimizer_comparison.csv) | 395 |
 | [outputs/reports/notebook_adam_comparison_24vnjhbr/optimizer_comparison.png](reports/notebook_adam_comparison_24vnjhbr/optimizer_comparison.png) | 252,367 |
 | [outputs/reports/notebook_model_a_adam_lr0.001_o_de8yz8/learning_curves.png](reports/notebook_model_a_adam_lr0.001_o_de8yz8/learning_curves.png) | 157,577 |
