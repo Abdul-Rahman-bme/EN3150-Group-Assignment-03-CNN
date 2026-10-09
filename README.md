@@ -1,369 +1,220 @@
-# EN3150: reproducible EuroSAT CNN experiments
+# EN3150 Group Project: Resource-Constrained CNN Classification
 
-I use this project to prepare saved data, train custom CNNs, plot histories and
-evaluate selected checkpoints independently from the terminal. Each command
-loads its own files. No notebook cells need to run first.
+This project compares standard and depthwise-separable custom CNNs with
+fine-tuned MobileNetV2 and ShuffleNetV2 for EuroSAT land-cover classification.
+The comparison covers accuracy, model storage, training time and computation
+for 64 x 64 RGB inputs.
 
-The original EuroSAT RGB dataset, saved splits and 12 completed custom CNN experiments
-remain in place. See [my custom CNN validation results](docs/custom_cnn_results.md)
-for all saved configurations, selected epochs, validation metrics and training times.
-Read [my final test results and assignment requirement audit](docs/final_results.md)
-for the four completed final comparisons and remaining submission gaps.
-Browse the [saved-results index](outputs/README.md) for retained reports and the archive log.
-The refactor uses their saved configurations and notebook code
-as the reference. New reports go into fresh folders under `outputs/reports/`.
+## Dataset and models
 
-## Final report names and pretrained stage
+[EuroSAT](https://github.com/phelber/EuroSAT) contains 27,000 labeled Sentinel-2
+images across ten land-cover classes. This project uses the RGB version and
+saved stratified splits: 18,900 training (70%), 4,050 validation (15%) and
+4,050 test images (15%). The saved class order is AnnualCrop, Forest,
+HerbaceousVegetation, Highway, Industrial, Pasture, PermanentCrop, Residential,
+River and SeaLake.
 
-In my final report, required standard Model A is existing `model_a`, and required
-final lightweight Model B is existing `model_c`. Existing `model_b` is my initial
-lightweight baseline. I selected `model_c` using validation results; its 46,373
-parameters meet the lightweight model's 100,000 cap. Code identifiers, run folders
-and historical A/B/C labels remain unchanged.
+| Report role | Code identifier | Architecture |
+| --- | --- | --- |
+| Standard Model A | `model_a` | StandardCNN |
+| Final lightweight Model B | `model_c` | WideLightweightCNN |
+| Initial lightweight baseline | `model_b` | LightweightCNN |
 
-I added MobileNetV2 (`MobileNet_V2_Weights.IMAGENET1K_V2`) and ShuffleNetV2 x0.5
-(`ShuffleNet_V2_X0_5_Weights.IMAGENET1K_V1`). See
-[my selection, preprocessing and run commands](docs/pretrained_model_selection.md)
-and the [synthetic verification evidence](docs/pretrained_verification.json).
-Fresh runs default to `outputs/pretrained_cnn/`; the 12 custom experiment folders
-remain in `outputs/custom_cnn/`. The two saved 30-epoch pretrained runs and four final test reports are now complete.
-This consolidation reads their artifacts without rerunning models.
+Final Model B was selected using validation results. Its 46,373 trainable
+parameters satisfy the 100,000-parameter cap. Existing identifiers, run paths
+and historical notebook A/B/C labels remain unchanged.
 
-For these candidates, fresh initialization loads the official ImageNet state
-before replacing its classifier with a new ten-class linear layer. All layers
-are fine-tuned at 64 x 64 using ImageNet normalization, the existing geometric
-augmentation, cross-entropy loss and minimum-validation-loss selection. Adam
-0.0001, weight decay 0.0001, 30 epochs, batch size 64 and seed 42 are the initial
-settings, not a proven optimum. Custom-model preprocessing stays unchanged.
+## Final test results
 
-The available source files are local-only under `outputs/pretrained_weights/`.
-Python's automatic download encountered a Windows TLS certificate error; the
-official ShuffleNet file was downloaded with Windows curl and its hash verified.
-Use the documented `--pretrained-weights-file` commands in this environment.
-Fresh initialization stops on download/hash/loading failure and never silently
-uses random weights. Resume and evaluation restore the saved checkpoint without
-reading or downloading an ImageNet source file.
+Values come from the four saved final test reports linked in the
+[output index](outputs/README.md#final-test-results-and-selected-pretrained-runs).
+Each run used seed 42 and 30 epochs; checkpoints were selected by minimum
+validation loss before test evaluation.
 
-Training configs record the explicit weight enum, official URL and source SHA-256,
-input/normalization/augmentation, split hashes, settings, and post-replacement
-total/trainable parameter and 64-pixel MAC counts. `model_summary.json` records the
-actual saved best-weights and full-resume file sizes in bytes, decimal MB and
-binary MiB. Checkpoint files remain local-only. Evaluation also records model
-cost and the saved weight-file size.
+| Model | Test accuracy | Macro F1 | Parameters | Saved weights (MB) | MACs/image |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Standard Model A (`model_a`) | 93.90% | 93.75% | 94,762 | 0.387218 | 41,288,960 |
+| Final lightweight Model B (`model_c`) | 94.37% | 94.18% | 46,373 | 0.196521 | 18,561,536 |
+| MobileNetV2 | 98.12% | 98.02% | 2,236,682 | 9.180270 | 24,461,312 |
+| ShuffleNetV2 x0.5 | 96.37% | 96.21% | 352,042 | 1.542078 | 3,230,848 |
 
-Plot the two new runs after they exist with:
+MB means 1,000,000 bytes. Sizes include saved buffers and serialization overhead.
+MACs count convolution/linear operations for one 64 x 64 image; they are not
+measured inference speed. These single-seed test results are separate from
+validation and published ImageNet results.
 
-```powershell
+## Project structure
+
+```text
+data/
+  raw/eurosat/             # Archive and images; obtained separately
+  splits/                 # Saved train.csv, validation.csv and test.csv
+docs/                     # Results, selection notes and troubleshooting
+outputs/
+  custom_cnn/             # Twelve completed custom experiments
+  pretrained_cnn/         # Two completed pretrained experiments
+  reports/                # Selected metrics, predictions and plots
+  archive/                # Local historical artifacts; ignored
+  README.md               # Shared-result index and local-only artifact paths
+src/cnn_assignment/       # CLI and shared workflow
+tests/                    # Workflow and saved-result checks
+test.ipynb                # Analysis notebook with historical outputs
+pyproject.toml
+requirements.txt
+```
+
+## Setup
+
+Use Python 3.11 and run commands from the repository root. The recorded training
+environment used PyTorch 2.5.1 and Torchvision 0.20.1. A clean-machine installation
+has **not** been verified; `requirements.txt` is an unpinned dependency inventory,
+not an environment lock.
+
+```sh
+python -m venv .venv
+```
+
+Activate with `source .venv/bin/activate` on Linux/macOS, or
+`.\.venv\Scripts\Activate.ps1` in Windows PowerShell. Then install:
+
+```sh
+python -m pip install torch==2.5.1 torchvision==0.20.1
+python -m pip install numpy==1.26.4 pandas matplotlib Pillow tqdm nbclient nbformat ipykernel jupyterlab
+python -m pip install --no-deps -e .
+python -m cnn_assignment --help
+```
+
+Choose the platform-appropriate CPU/CUDA installation command from the
+[official PyTorch version instructions](https://pytorch.org/get-started/previous-versions/).
+Exact resume requires the saved Python/package versions, device and worker count;
+the setup above is not an exact reconstruction of every recorded dependency.
+See [environment-specific troubleshooting](docs/troubleshooting.md) for the
+existing Conda environment and Windows certificate issues.
+
+Open `jupyter lab test.ipynb` with the project environment as its kernel.
+Run the setup cell first; section 9 reads final reports in order. Earlier
+validation cells require images and checkpoints. Historical outputs and
+first-person notebook explanations are retained.
+
+## Dataset acquisition
+
+Obtain the **RGB** archive through the
+[official EuroSAT repository](https://github.com/phelber/EuroSAT#dataset),
+which links the current Zenodo distribution. Extract or arrange the JPEG class
+folders into this layout, preserving filenames and pixel content:
+
+```text
+data/raw/eurosat/
+  EuroSAT.zip             # Optional; needed only for --check-archive
+  2750/
+    AnnualCrop/AnnualCrop_1.jpg
+    Forest/Forest_1.jpg
+    ...                   # All ten class directories listed above
+data/splits/
+  train.csv
+  validation.csv
+  test.csv
+```
+
+Reuse the committed split CSVs and saved normalization. Images must match the
+CSV paths and pixel hashes. The optional archive check expects the original
+archive checksum; another packaging of the same images can fail that check.
+
+```sh
+python -m cnn_assignment prepare
+python -m cnn_assignment prepare --check-images
+```
+
+`prepare` checks existing images, saved split integrity and configuration. It
+does **not** download/extract data, generate missing splits or recalculate
+normalization. Missing images or CSVs must be supplied separately.
+
+## Commands
+
+Paths below are relative to the project. Plotting uses saved configs/histories
+and works without raw images or checkpoints:
+
+```sh
+python -m cnn_assignment plot --run outputs/custom_cnn/model_c_adam_lr0.001
+python -m cnn_assignment plot
 python -m cnn_assignment plot --runs-root outputs/pretrained_cnn
 python -m cnn_assignment plot --additional-runs-root outputs/pretrained_cnn
 ```
 
-The second command compares both collections; plotting still reads saved
-histories without importing torch. Existing progress bars, validation, explicit
-final-test evaluation and epoch-boundary resume support these architectures.
-Run `python tests/verify_pretrained_gpu.py --weights-dir outputs/pretrained_weights`
-for the optional synthetic verification; it writes to a fresh folder under `tmp/`.
+Training is explicit and requires images. Use new run names; existing folders
+are protected. These examples start new experiments:
 
-## Windows setup
-
-Use the existing `ml_env_fixed` environment. Install this local project once in
-editable mode so new terminals can import it without setting `PYTHONPATH`.
-No dependency upgrade or reinstall is needed. In PowerShell:
-
-```powershell
-conda activate ml_env_fixed
-$Project = 'D:\2_ML PROJECTS\38. CNN_PR\EN3150-Assignment03-CNN'
-$PreviousDistutilsSetting = $env:SETUPTOOLS_USE_DISTUTILS
-try {
-    $env:SETUPTOOLS_USE_DISTUTILS = 'stdlib'
-    python -m pip install --no-index --no-deps --no-build-isolation -e "$Project"
-} finally {
-    $env:SETUPTOOLS_USE_DISTUTILS = $PreviousDistutilsSetting
-}
-python -m cnn_assignment --help
+```sh
+python -m cnn_assignment train --model model_a --optimizer adam --lr 0.001 --run-name model_a_adam_repeat1
+python -m cnn_assignment train --model model_c --optimizer adam --lr 0.001 --run-name model_c_adam_repeat1
+python -m cnn_assignment train --model mobilenet_v2 --optimizer adam --lr 0.0001 --run-name mobilenet_v2_adam_repeat1
+python -m cnn_assignment train --model shufflenet_v2_x0_5 --optimizer adam --lr 0.0001 --run-name shufflenet_v2_x0_5_adam_repeat1
 ```
 
-The setup command installs only this project's editable package and entry point.
-`--no-index` disables package-index access, `--no-deps` skips dependencies, and
-`--no-build-isolation` uses the environment's existing build tools. The temporary
-distutils setting works around the inspected Python 3.11 environment's existing
-setuptools import assertion and is restored afterward. Source edits are available
-immediately; keep the project at this location or reinstall after moving it.
+Defaults are 30 epochs, batch size 64, seed 42, weight decay 0.0001 and zero
+workers. `--device auto` selects CUDA when available; `--device cpu` forces CPU.
+Training retains 64 x 64 inputs and geometric augmentation. Custom models use
+saved dataset normalization; pretrained models use ImageNet normalization and
+fine-tune all layers. Fresh pretrained runs load genuine ImageNet weights before
+creating a ten-class head; loading failures stop the run. Use
+`--pretrained-weights-file` for a verified manual source download.
 
-In a fresh PowerShell terminal, activate the environment and run:
+Resume an **incomplete** run from its full epoch-boundary checkpoint:
 
-```powershell
-conda activate ml_env_fixed
-python -m cnn_assignment --help
+```sh
+python -m cnn_assignment train --resume outputs/custom_cnn/model_c_adam_repeat1
 ```
 
-The editable installation was verified in `ml_env_fixed` from a fresh shell
-outside the project directory with `PYTHONPATH` and `SETUPTOOLS_USE_DISTUTILS`
-removed: `python -m cnn_assignment --help` exited successfully, and the package
-import resolved to this project's `src/cnn_assignment/`.
+Resume uses `last_checkpoint.pt` and the saved configuration. Match its device
+and worker count; completed runs cannot be extended. The original six custom
+`best_weights.pt` files lack optimizer/RNG/last-epoch state and **cannot provide
+exact training resume**. Pretrained resume/evaluation load trained checkpoints
+without downloading ImageNet weights again.
 
-Commands work from any current directory. The package finds the project from its
-own file location. Relative command paths resolve against the project, including
-output paths. To select another project location, put
-`--project-root "D:\path\to\project"` **before** the command name.
-The `cnn-assignment` entry point is also available in the activated environment.
+Validation/evaluation require both images and the run's trained
+`best_weights.pt` checkpoint:
 
-For `test.ipynb`, select `ml_env_fixed` as the kernel
-and run its first code cell. It finds the project from the kernel's working
-directory (the project root or `notebooks/`, including deeper subfolders) and
-adds `src/` to that kernel's import path. The notebook does not need a terminal
-`PYTHONPATH` setting or an editable installation.
-
-After restarting the notebook kernel, run the first code cell, then any saved
-history, learning-curve, optimizer-comparison or saved-checkpoint validation
-cell in section 7. Each reads its saved inputs directly; data exploration,
-loader construction and training setup are not prerequisites.
-Run all cells in order for the complete analysis. Notebook execution reuses
-the completed runs and never starts training. Every plot or validation invocation
-saves to a fresh folder under `outputs/reports/`, including when rerunning a cell.
-The notebook's existing outputs remain the historical experiment record.
-
-The inspected environment contains torch 2.5.1, torchvision 0.20.1, NumPy 1.26.4,
-pandas 2.3.3, matplotlib 3.10.9, Pillow 12.3.0 and tqdm 4.66.1. `requirements.txt`
-is a dependency inventory; use the existing environment. New run configs record
-Python and package versions for later reproduction.
-
-## Prepare and check saved data
-
-```powershell
-python -m cnn_assignment prepare
-python -m cnn_assignment prepare --check-images --check-archive --output-dir outputs/reports/data_audit_v1
-```
-
-`prepare` verifies CSV structure, class order, saved pixel hashes, disjointness,
-70/15/15 stratification and the presence of every saved image path. It reuses the
-saved splits and exact normalization from the selected config. `--check-images`
-also opens all images, checks 64 × 64 RGB format and compares their pixel hashes.
-This optional dataset audit includes test images but does no model evaluation.
-`--check-archive` checks the ZIP against the notebook's original MD5.
-
-Preparation does not download or extract the dataset, regenerate splits or
-recompute normalization. Missing files cause an error. Restore the existing
-dataset and split files before continuing. Use `--data-root`, `--split-dir`,
-`--archive` or `--config` to point to explicitly supplied locations.
-
-The dataset is 27,000 images in ten classes, with 18,900 training, 4,050 validation
-and 4,050 test rows. Paths in each CSV are relative to `data/raw/eurosat/2750/`.
-The saved label order is AnnualCrop, Forest, HerbaceousVegetation, Highway,
-Industrial, Pasture, PermanentCrop, Residential, River and SeaLake.
-
-## Train a fresh experiment
-
-These commands start training when you choose to run them:
-
-```powershell
-python -m cnn_assignment train --model model_a --optimizer adam --lr 0.001 --run-name model_a_adam_lr0.001_repeat1
-python -m cnn_assignment train --model model_b --optimizer sgd --lr 0.01 --run-name model_b_sgd_lr0.01_repeat1
-python -m cnn_assignment train --model model_b --optimizer sgd_momentum --lr 0.01 --run-name model_b_momentum_repeat1
-```
-
-Defaults are 30 epochs, batch size 64, seed 42, weight decay 1e-4 and zero workers.
-Adam defaults to LR 0.001; SGD and momentum SGD default to LR 0.01. Momentum is
-0.9 for `sgd_momentum`. `--epochs`, `--batch-size`, `--seed`, `--weight-decay`,
-`--output-root`, `--num-workers` and `--device` are explicit options for new runs.
-Device `auto` selects CUDA if available, otherwise CPU. `--device cpu` forces CPU.
-
-Training uses raw logits, CrossEntropyLoss and FP32. It resets initialization,
-Python/NumPy/torch random seeds and a separate training shuffle generator before
-each new run. Horizontal and vertical flips and random quarter turns are the
-only augmentation. Validation has tensor conversion and saved normalization.
-Inputs stay 64 × 64; there is no colour jitter or resizing. Epoch metrics weight
-each batch by its sample count. Batch progress bars and epoch summaries are
-enabled by default; `--no-progress` hides batch bars. CUDA timing is synchronized.
-Best weights are selected strictly by lowest validation loss. Training never
-constructs a test loader or evaluates test images.
-
-Default run names retain the original convention, for example
-`model_a_sgd_momentum_lr0.01`. Any existing run folder is protected. To deliberately
-skip a completed run, use:
-
-```powershell
-python -m cnn_assignment train --model model_a --optimizer adam --lr 0.001 --skip-existing
-```
-
-This skips the completed original Adam run without training or writing to it.
-An incomplete existing folder still raises an error. Use a fresh run name for a
-repeat. There is no overwrite flag.
-
-## Model C experiments
-
-Model C (`model_c`, `WideLightweightCNN`) uses the same saved splits, class order,
-normalization, augmentation, training loop and checkpoint selection as Models A
-and B. Its four completed configurations are below. These commands show their
-settings; existing run folders are protected. See the
-[saved results and discussion](docs/custom_cnn_results.md) for their validation results.
-
-```powershell
-python -m cnn_assignment train --model model_c --optimizer adam --lr 0.001 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
-python -m cnn_assignment train --model model_c --optimizer sgd --lr 0.01 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
-python -m cnn_assignment train --model model_c --optimizer sgd_momentum --lr 0.01 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
-python -m cnn_assignment train --model model_c --optimizer sgd --lr 0.003 --epochs 30 --batch-size 64 --seed 42 --weight-decay 0.0001
-```
-
-Momentum is 0.9 for the third run. Default run folders are
-`model_c_adam_lr0.001`, `model_c_sgd_lr0.01`,
-`model_c_sgd_momentum_lr0.01` and `model_c_sgd_lr0.003` under
-`outputs/custom_cnn/`. The existing commands support these saved runs:
-
-```powershell
-python -m cnn_assignment train --resume outputs/custom_cnn/model_c_adam_lr0.001
+```sh
 python -m cnn_assignment validate --run outputs/custom_cnn/model_c_adam_lr0.001 --compare-history
-python -m cnn_assignment plot --run outputs/custom_cnn/model_c_adam_lr0.001
-python -m cnn_assignment plot
 ```
 
-The resume command applies to an incomplete run with a full last checkpoint.
-Comparison reports automatically include Model C histories alongside existing
-models and distinguish the two plain SGD learning rates.
+Final-test evaluation is separate and explicit, used only after selecting a
+configuration using validation. Existing reports can be read without rerunning it:
 
-## Resume a new incomplete run
-
-```powershell
-python -m cnn_assignment train --resume outputs/custom_cnn/model_a_adam_lr0.001_repeat1
+```sh
+python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_c_adam_lr0.001
 ```
 
-New runs save `config.json`, per-epoch `history.csv`, `best_weights.pt` and
-`last_checkpoint.pt`. The full last checkpoint contains the current model and
-optimizer state, completed epoch, best result and best weights, canonical history,
-Python/NumPy/torch/CUDA random states and the training shuffle generator state.
-Writes use temporary files and replacement. The last checkpoint is saved first;
-resume restores history and best weights from it if an artifact write was
-interrupted. Resume continues the original epoch budget and uses the saved
-configuration; model/optimizer/LR/epoch overrides are rejected.
+Plots/evaluations create fresh timestamped report folders. An explicit
+`--output-dir` must not already exist. `--no-progress` disables batch progress
+bars for training/validation/evaluation.
 
-Resume requires the same Python/package versions, device type, worker count and
-unchanged split fingerprints. If the original run used workers or CPU explicitly,
-supply matching options, for example `--num-workers 2 --device cpu`. Dataset and
-split directory overrides allow relocation, while split contents must match.
-For reproducible continuation, also keep the images and hardware unchanged.
-The saved random states support epoch-boundary resume; interrupted work within
-an epoch is repeated. cuDNN uses the notebook's deterministic settings, but
-different hardware or PyTorch kernels can still change floating-point results.
+Saved-file and guarded notebook-analysis checks:
 
-**The six original `best_weights.pt` files support evaluation only.** They do not
-contain optimizer, random, shuffle or last-epoch states, so exact resume from
-those files is impossible. Completed runs cannot be resumed to extend training.
-Full new checkpoints contain Python/NumPy objects and are loaded as trusted local
-artifacts; evaluation loads only tensor weights with `weights_only=True`.
-
-## Plot existing results
-
-```powershell
-python -m cnn_assignment plot --run outputs/custom_cnn/model_a_adam_lr0.001
-python -m cnn_assignment plot
-python -m cnn_assignment plot --optimizer adam --output-dir outputs/reports/adam_comparison_v1
+```sh
+python -m unittest discover -s tests -p test_final_results.py -v
 ```
 
-A single-run plot shows training and validation loss/accuracy and marks the
-minimum-validation-loss epoch. Comparisons group curves by model and optimizer,
-and save a CSV with selected validation metrics and mean training times, including
-the mean excluding the first epoch. Plotting imports no torch/model/dataset
-modules and works with only the saved configs and histories, even without images
-or weights. Use `--runs-root` for another experiment collection.
+These checks perform no model evaluation or training; local checkpoint hash/size
+assertions require saved weights. The optional broader suite is
+`python -m unittest discover -s tests -v`; it also needs dataset/checkpoint
+artifacts, includes synthetic updates and real validation checks, and does not
+launch dataset training or final-test evaluation.
 
-Every CLI plot and evaluation writes to a new timestamped folder by default.
-An explicit `--output-dir` must not already exist. Choose another suffix for
-subsequent reports; completed experiment plots and results are never overwritten.
+## Shared files and further reading
 
-## Validate a saved checkpoint
+Git includes source, tests, the notebook, split CSVs, all 12 custom configs and
+histories, selected pretrained configs/histories/summaries, and the reports/plots
+allowlisted in [outputs/README.md](outputs/README.md). New reports stay ignored
+until deliberately selected.
 
-```powershell
-python -m cnn_assignment validate --run outputs/custom_cnn/model_a_sgd_lr0.01 --compare-history
-python -m cnn_assignment validate --run outputs/custom_cnn/model_b_adam_lr0.001 --device cpu
-```
+**Raw images and model weights are not included in Git.** Obtain EuroSAT
+separately and request trained checkpoints from the group, preserving their
+documented paths. Full resume checkpoints, source ImageNet weights, archives,
+temporary reports and personal `notes.md` also remain local-only.
 
-Evaluation loads architecture, class order, normalization and batch size from
-that run's `config.json`, then strictly loads its `best_weights.pt`. It does not
-update model weights or BatchNorm statistics. `--compare-history` compares loss
-and accuracy with the minimum-loss row, reports the difference and exits with an
-error on mismatch. Loss tolerance is `rtol=1e-5, atol=1e-6`; accuracy tolerance is
-`atol=1e-8`. CPU/CUDA accumulation can differ slightly.
-
-## Explicit final test evaluation
-
-Run this only after selecting a checkpoint using validation results:
-
-```powershell
-python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_a_adam_lr0.001 --output-dir outputs/reports/final_test_model_a_v1
-```
-
-This command alone selects the test split. It saves `metrics.json` with accuracy,
-macro precision, macro recall and macro F1; `per_class_metrics.csv` with precision,
-recall, F1 and support; raw and row-normalized confusion matrices as CSV and PNG;
-and `predictions.csv` with each relative image path, true and predicted labels,
-class names, confidence and correctness. Undefined precision/recall/F1 is zero.
-Reports include checkpoint/split hashes and measured inference-pass timing.
-No test evaluation was performed during the refactor.
-
-## Model cost and timing
-
-| Model | Trainable parameters | Estimated FP32 parameter bytes | Conv/linear MACs per image | Original weights-file bytes |
-| --- | ---: | ---: | ---: | ---: |
-| StandardCNN (`model_a`) | 94,762 | 379,048 | 41,288,960 | 387,218 |
-| LightweightCNN (`model_b`) | 12,965 | 51,860 | 5,141,760 | 61,016 |
-| WideLightweightCNN (`model_c`) | 46,373 | 185,492 | 18,561,536 | 196,521 |
-
-FP32 parameter storage is four bytes per trainable parameter. Actual weight-file
-size includes BatchNorm buffers and serialization overhead. MACs count only
-convolution and linear layers for one 64 × 64 image; they exclude pooling,
-normalization, activations and data loading. Measured seconds depend on hardware
-and include the whole data-loader pass, transfers and loss computation. Evaluation
-also includes prediction collection. These quantities are reported separately.
-
-Both models retain the original layer names, channel widths 3 → 32 → 64 → 128,
-pooling and Linear(128, 10) classifier. The lightweight blocks have depthwise and
-pointwise convolutions followed by one BatchNorm/ReLU/pooling sequence, with no
-extra activation or normalization between the convolutions.
-
-Model C reuses those lightweight blocks with widths 3 → 64 → 128 → 256,
-adaptive average pooling to 1 × 1, flattening and Linear(256, 10). Both
-convolutions in each block keep `bias=False`; BatchNorm keeps its affine
-parameters and the classifier keeps its bias. Code checks verify the 46,373
-trainable parameters and MAC count for a 64 × 64 input. The blocks contribute
-347, 9,024 and 34,432 parameters, and the classifier contributes 2,570.
-
-## Checks and files
-
-```powershell
-python -m unittest discover -s "$Project\tests" -v
-python -m cnn_assignment validate --run outputs/custom_cnn/model_a_sgd_lr0.01 --compare-history --no-progress
-```
-
-The focused tests check model shapes, parameter/MAC counts, strict loading of all
-six checkpoints, split integrity, normalization, sample-weighted metrics, metric
-formulas, random/shuffle restoration, completed-run protection, simulated resume
-and CLI operation from another directory. Resume tests substitute fake epoch
-metrics and synthetic states; they perform no gradients or optimizer steps.
-The separate validation command checks one real saved model on validation data.
-
-The refactor check run passed all 10 tests. Model A's saved SGD checkpoint matched
-epoch 27 exactly on all 4,050 validation images: loss 0.3795960882857994 and
-accuracy 0.8720987654320987 (87.2099%). See
-`outputs/refactor_checks/validation_model_a_sgd/metrics.json` and
-`outputs/refactor_checks/verification_summary.json`. Recreated optimizer and
-single-run plots are under `outputs/refactor_checks/optimizer_plots/` and
-`outputs/refactor_checks/sgd_plot/`.
-
-`src/cnn_assignment/` contains the CLI, data, transforms, models, training,
-evaluation, plotting and utility modules. Dataset classes and transform classes
-are importable for Windows worker spawning; zero workers is the default.
-`pyproject.toml` defines packaging and the `cnn-assignment` entry point.
-`test.ipynb` remains the analysis document, with historical outputs preserved.
-Its final analysis reads saved reports and histories; section 9.7 records the audit
-and pending dataset-sheet/submission steps. Revised cells import shared code, read completed experiments
-and save recreated plots in a fresh report folder.
-
-`outputs/refactor_checks/` holds the original file-hash manifest and verification
-reports. The manifest's notebook hash records its pre-refactor version; the
-notebook's source was intentionally updated while retaining its outputs. Split
-CSVs and all files under `outputs/custom_cnn/` must still match their hashes.
-Git ignores raw data, caches, environments, weights, resume checkpoints and
-unselected reports. The output index links the selected validation/final test
-reports and figures, and custom/pretrained configs and histories allowlisted
-for sharing. Source, the notebook and split CSVs remain trackable. Ignoring a
-file does not delete it or untrack one already in Git.
+- [Final results and remaining assignment requirements](docs/final_results.md)
+- [Custom CNN validation experiments](docs/custom_cnn_results.md)
+- [Pretrained model selection and initial settings](docs/pretrained_model_selection.md)
+- [Selected output index](outputs/README.md)
+- [Environment-specific troubleshooting](docs/troubleshooting.md)

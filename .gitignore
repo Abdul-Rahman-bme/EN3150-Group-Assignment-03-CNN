@@ -32,6 +32,9 @@ dist/
 /outputs/custom_cnn/**
 !/outputs/reports/
 /outputs/reports/**
+# Prune unselected notebook-validation scratch folders; exact selections below
+# remain shareable and may still warn when their permissions deny access.
+/outputs/reports/notebook_validation_*/
 !/outputs/refactor_checks/
 /outputs/refactor_checks/**
 
