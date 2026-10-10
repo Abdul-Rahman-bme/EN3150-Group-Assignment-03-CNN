@@ -60,6 +60,63 @@ class WideLightweightCNN(nn.Module):
         return self.classifier(torch.flatten(self.pool(self.features(x)), start_dim=1))
 
 
+class ResidualDepthwiseBlock(nn.Module):
+    """Depthwise-separable convolution with a size-matched residual shortcut."""
+
+    def __init__(self, in_channels, out_channels, stride=1):
+        super().__init__()
+        if stride not in (1, 2):
+            raise ValueError("stride must be 1 or 2")
+
+        self.features = nn.Sequential(
+            nn.Conv2d(in_channels, in_channels, kernel_size=3,
+                      stride=stride, padding=1, groups=in_channels, bias=False),
+            nn.BatchNorm2d(in_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+        )
+
+        if in_channels == out_channels:
+            self.shortcut = (nn.Identity() if stride == 1
+                             else nn.AvgPool2d(kernel_size=2, stride=2))
+        else:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, kernel_size=1,
+                          stride=stride, bias=False),
+                nn.BatchNorm2d(out_channels),
+            )
+        self.activation = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        return self.activation(self.features(x) + self.shortcut(x))
+
+
+class ResidualDepthwiseCNN(nn.Module):
+    """Experimental model_d: a small residual CNN for 64x64 RGB EuroSAT."""
+
+    def __init__(self, num_classes=10):
+        super().__init__()
+        self.stem = nn.Sequential(
+            nn.Conv2d(3, 24, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(24),
+            nn.ReLU(inplace=True),
+        )
+        self.features = nn.Sequential(
+            ResidualDepthwiseBlock(24, 24, stride=2),
+            ResidualDepthwiseBlock(24, 48, stride=2),
+            ResidualDepthwiseBlock(48, 96, stride=2),
+        )
+        self.pool = nn.AdaptiveAvgPool2d(1)
+        self.classifier = nn.Linear(96, num_classes)
+
+    def forward(self, x):
+        x = self.stem(x)
+        x = self.features(x)
+        x = torch.flatten(self.pool(x), start_dim=1)
+        return self.classifier(x)
+
+
 class PretrainedWeightsError(RuntimeError):
     """A fresh pretrained run must stop rather than use a random backbone."""
 
@@ -105,7 +162,8 @@ def build_model(name, num_classes=10, *, pretrained=False, pretrained_weights_fi
         if pretrained or pretrained_weights_file is not None:
             raise ValueError("ImageNet initialization only applies to the two pretrained candidates")
         return {"model_a": StandardCNN, "model_b": LightweightCNN,
-                "model_c": WideLightweightCNN}[name](num_classes)
+                "model_c": WideLightweightCNN,
+                "model_d": ResidualDepthwiseCNN}[name](num_classes)
     if name not in PRETRAINED_MODELS:
         raise ValueError(f"Unsupported model: {name}")
     if pretrained_weights_file is not None and not pretrained:

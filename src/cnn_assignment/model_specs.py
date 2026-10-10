@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-CUSTOM_MODELS = ("model_a", "model_b", "model_c")
+CUSTOM_MODELS = ("model_a", "model_b", "model_c", "model_d")
 PRETRAINED_MODELS = ("mobilenet_v2", "shufflenet_v2_x0_5")
 MODEL_NAMES = CUSTOM_MODELS + PRETRAINED_MODELS
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
