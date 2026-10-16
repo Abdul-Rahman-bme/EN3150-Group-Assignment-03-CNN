@@ -1,0 +1,34 @@
+{
+  "model": "model_a",
+  "optimizer": "adam",
+  "optimizer_settings": {
+    "lr": 0.001
+  },
+  "weight_decay": 0.0001,
+  "epochs": 30,
+  "batch_size": 64,
+  "seed": 42,
+  "class_names": [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake"
+  ],
+  "normalization_mean": [
+    0.3439007467932198,
+    0.37995412567515396,
+    0.40754934092415773
+  ],
+  "normalization_std": [
+    0.20242460536699797,
+    0.13668293748114527,
+    0.11540833375611878
+  ],
+  "device": "cuda"
+}

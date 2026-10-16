@@ -1,8 +1,15 @@
+# Shared dependency inventory; Python 3.11 / torch 2.5.1 / torchvision 0.20.1
+# match the completed CLI experiments. Remaining packages are not a lock file.
+# Original upstream pins are preserved in requirements-upstream.txt for reference.
+torch==2.5.1
+torchvision==0.20.1
 numpy
 pandas
 matplotlib
 scikit-learn
-ipykernel
-torch==2.13.0
-torchvision==0.28.0
+Pillow
 tqdm
+ipykernel
+nbclient
+nbformat
+jupyterlab

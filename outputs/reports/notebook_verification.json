@@ -1,0 +1,30 @@
+{
+  "fresh_kernel_notebooks_independent_analysis": "passed",
+  "analysis_cells_by_id": {
+    "8b928a05": "experiment settings",
+    "6b7a8944": "saved experiment reader",
+    "8c294ea0": "Model A Adam history",
+    "6f91b7ab": "Model A Adam curves",
+    "358c07f9": "Model B Adam history",
+    "b2c22e01": "Model B Adam curves",
+    "5b81687e": "Adam comparison",
+    "64d202d7": "Model A SGD history",
+    "9a2ce807": "Model A SGD curves",
+    "0dd7d495": "saved checkpoint validation",
+    "ce45d6dc": "Model A momentum history",
+    "9a1c0504": "Model A momentum curves",
+    "e65a94c4": "Model B SGD history",
+    "70cfc86b": "Model B SGD curves",
+    "4251e991": "Model B momentum history",
+    "a7c4e86b": "Model B momentum curves",
+    "7fd68929": "optimizer comparison",
+    "8fbf1bbb": "saved history/checkpoint reconnect"
+  },
+  "comparison_validation_and_reconnect_reruns": "passed",
+  "validation_split": "validation",
+  "checkpoint": "model_a_sgd_lr0.01",
+  "validation_matches_saved_history": true,
+  "historical_notebook_preserved": true,
+  "training_launched": false,
+  "test_set_evaluated": false
+}

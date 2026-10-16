@@ -1,0 +1,11 @@
+true_class,AnnualCrop,Forest,HerbaceousVegetation,Highway,Industrial,Pasture,PermanentCrop,Residential,River,SeaLake
+AnnualCrop,376,3,14,4,0,17,22,0,2,12
+Forest,0,423,1,0,0,14,0,0,0,12
+HerbaceousVegetation,10,4,349,17,9,9,28,13,11,0
+Highway,26,3,34,180,14,19,30,17,52,0
+Industrial,0,0,1,7,350,0,0,16,1,0
+Pasture,4,11,19,1,0,250,9,0,5,1
+PermanentCrop,19,2,79,18,4,18,222,6,7,0
+Residential,0,0,7,5,10,0,0,428,0,0
+River,22,20,25,50,4,32,7,4,194,17
+SeaLake,1,30,4,0,0,14,0,0,2,399
