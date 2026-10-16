@@ -1,0 +1,15 @@
+layer,operation,output,formula,parameters,macs
+features.0,Conv2d k3 s1 p1 g1,32 x 64 x 64,32 x 3 x 3 x 3 + 0,864,3538944
+features.1,BatchNorm2d,32 x 64 x 64,2 x 32,64,0
+features.2,ReLU,32 x 64 x 64,0,0,0
+features.3,MaxPool2d,32 x 32 x 32,0,0,0
+features.4,Conv2d k3 s1 p1 g1,64 x 32 x 32,64 x 32 x 3 x 3 + 0,18432,18874368
+features.5,BatchNorm2d,64 x 32 x 32,2 x 64,128,0
+features.6,ReLU,64 x 32 x 32,0,0,0
+features.7,MaxPool2d,64 x 16 x 16,0,0,0
+features.8,Conv2d k3 s1 p1 g1,128 x 16 x 16,128 x 64 x 3 x 3 + 0,73728,18874368
+features.9,BatchNorm2d,128 x 16 x 16,2 x 128,256,0
+features.10,ReLU,128 x 16 x 16,0,0,0
+features.11,MaxPool2d,128 x 8 x 8,0,0,0
+pool,AdaptiveAvgPool2d,128 x 1 x 1,0,0,0
+classifier,Linear,10,128 x 10 + 10,1290,1280

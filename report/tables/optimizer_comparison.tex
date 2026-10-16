@@ -1,0 +1,18 @@
+\begin{tabular}{lrrrrrrr}
+\toprule
+Code & Optimizer & LR & Mom. & Epoch & Val. loss & Val. acc. (\%) & Train s \\
+\midrule
+model\_a & adam & 0.001 & 0 & 30 & 0.1721 & 94.12 & 26.78 \\
+model\_a & sgd & 0.003 & 0 & 29 & 0.4595 & 83.63 & 28.10 \\
+model\_a & sgd & 0.01 & 0 & 27 & 0.3796 & 87.21 & 26.01 \\
+model\_a & sgd\_momentum & 0.01 & 0.9 & 30 & 0.1745 & 94.20 & 23.94 \\
+model\_b & adam & 0.001 & 0 & 27 & 0.2445 & 91.56 & 27.79 \\
+model\_b & sgd & 0.003 & 0 & 28 & 0.6512 & 78.30 & 27.93 \\
+model\_b & sgd & 0.01 & 0 & 28 & 0.4831 & 83.53 & 25.39 \\
+model\_b & sgd\_momentum & 0.01 & 0.9 & 25 & 0.2347 & 91.83 & 26.10 \\
+model\_c & adam & 0.001 & 0 & 28 & 0.1776 & 94.00 & 30.53 \\
+model\_c & sgd & 0.003 & 0 & 29 & 0.5881 & 79.60 & 24.33 \\
+model\_c & sgd & 0.01 & 0 & 29 & 0.4166 & 85.01 & 34.29 \\
+model\_c & sgd\_momentum & 0.01 & 0.9 & 29 & 0.2183 & 92.32 & 25.92 \\
+\bottomrule
+\end{tabular}

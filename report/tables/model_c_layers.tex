@@ -1,0 +1,23 @@
+\begin{tabular}{lrrr}
+\toprule
+Operation & Output C x H x W & Formula & Params \\
+\midrule
+Conv2d k3 s1 p1 g3 & 3 x 64 x 64 & 3 x 1 x 3 x 3 + 0 & 27 \\
+Conv2d k1 s1 p0 g1 & 64 x 64 x 64 & 64 x 3 x 1 x 1 + 0 & 192 \\
+BatchNorm2d & 64 x 64 x 64 & 2 x 64 & 128 \\
+ReLU & 64 x 64 x 64 & 0 & 0 \\
+MaxPool2d & 64 x 32 x 32 & 0 & 0 \\
+Conv2d k3 s1 p1 g64 & 64 x 32 x 32 & 64 x 1 x 3 x 3 + 0 & 576 \\
+Conv2d k1 s1 p0 g1 & 128 x 32 x 32 & 128 x 64 x 1 x 1 + 0 & 8,192 \\
+BatchNorm2d & 128 x 32 x 32 & 2 x 128 & 256 \\
+ReLU & 128 x 32 x 32 & 0 & 0 \\
+MaxPool2d & 128 x 16 x 16 & 0 & 0 \\
+Conv2d k3 s1 p1 g128 & 128 x 16 x 16 & 128 x 1 x 3 x 3 + 0 & 1,152 \\
+Conv2d k1 s1 p0 g1 & 256 x 16 x 16 & 256 x 128 x 1 x 1 + 0 & 32,768 \\
+BatchNorm2d & 256 x 16 x 16 & 2 x 256 & 512 \\
+ReLU & 256 x 16 x 16 & 0 & 0 \\
+MaxPool2d & 256 x 8 x 8 & 0 & 0 \\
+AdaptiveAvgPool2d & 256 x 1 x 1 & 0 & 0 \\
+Linear & 10 & 256 x 10 + 10 & 2,570 \\
+\bottomrule
+\end{tabular}

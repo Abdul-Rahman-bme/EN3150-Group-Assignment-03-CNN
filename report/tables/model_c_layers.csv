@@ -1,0 +1,18 @@
+layer,operation,output,formula,parameters,macs
+features.0.block.0,Conv2d k3 s1 p1 g3,3 x 64 x 64,3 x 1 x 3 x 3 + 0,27,110592
+features.0.block.1,Conv2d k1 s1 p0 g1,64 x 64 x 64,64 x 3 x 1 x 1 + 0,192,786432
+features.0.block.2,BatchNorm2d,64 x 64 x 64,2 x 64,128,0
+features.0.block.3,ReLU,64 x 64 x 64,0,0,0
+features.0.block.4,MaxPool2d,64 x 32 x 32,0,0,0
+features.1.block.0,Conv2d k3 s1 p1 g64,64 x 32 x 32,64 x 1 x 3 x 3 + 0,576,589824
+features.1.block.1,Conv2d k1 s1 p0 g1,128 x 32 x 32,128 x 64 x 1 x 1 + 0,8192,8388608
+features.1.block.2,BatchNorm2d,128 x 32 x 32,2 x 128,256,0
+features.1.block.3,ReLU,128 x 32 x 32,0,0,0
+features.1.block.4,MaxPool2d,128 x 16 x 16,0,0,0
+features.2.block.0,Conv2d k3 s1 p1 g128,128 x 16 x 16,128 x 1 x 3 x 3 + 0,1152,294912
+features.2.block.1,Conv2d k1 s1 p0 g1,256 x 16 x 16,256 x 128 x 1 x 1 + 0,32768,8388608
+features.2.block.2,BatchNorm2d,256 x 16 x 16,2 x 256,512,0
+features.2.block.3,ReLU,256 x 16 x 16,0,0,0
+features.2.block.4,MaxPool2d,256 x 8 x 8,0,0,0
+pool,AdaptiveAvgPool2d,256 x 1 x 1,0,0,0
+classifier,Linear,10,256 x 10 + 10,2570,2560

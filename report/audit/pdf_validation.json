@@ -1,0 +1,18 @@
+{
+  "filename": "report/54_A03_EN3150.pdf",
+  "pages": 21,
+  "bytes": 431205,
+  "sha256": "2b80a30b218e76fdd6c352fe36e3c38a94a83a5eb0ce900448efc3f6382ab916",
+  "group": 54,
+  "compiled_with": "pdfLaTeX + BibTeX; report/build.sh",
+  "compilation_exit_status": 0,
+  "checks": [
+    "Four member indices present",
+    "Expected final metrics present",
+    "Group placeholder absent",
+    "No unresolved citation markers",
+    "No overfull text boxes"
+  ],
+  "visual_review": "Title, architecture, fine-tuning curves and master-comparison page inspected",
+  "status": "Compiled evidence-audited draft; controlled compact run remains blocked"
+}
