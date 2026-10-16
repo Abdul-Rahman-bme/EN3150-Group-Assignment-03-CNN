@@ -1,0 +1,31 @@
+{
+  "source": "notebooks/03_model_B_compact_cnn.ipynb at original simple_model tip 7d81c513b206a31f59cdb2b175a0aeb1ab461853",
+  "evidence_level": "preserved notebook source and printed outputs; primary run manifests/history/weights are not committed",
+  "split_mode": "new stratified random 70/15/15, seed 42; reconstruction matches canonical memberships",
+  "batch_size": 128,
+  "maximum_epochs": 60,
+  "early_stopping_patience": 12,
+  "actual_completed_epochs": null,
+  "optimizer": "Adam, lr 0.001, no weight_decay argument",
+  "scheduler": "CosineAnnealingLR, T_max=60",
+  "checkpoint_selection": "maximum validation macro F1, improvement threshold 1e-6",
+  "gradient_clip_norm": 5.0,
+  "mixed_precision": "CUDA AMP enabled in recorded notebook output",
+  "augmentation_difference": "Adds ColorJitter brightness/contrast/saturation 0.10",
+  "dropout": 0.10,
+  "printed_test_metrics_cell_28": {
+    "accuracy": 0.9471604938271605,
+    "macro_precision": 0.9453823338456664,
+    "macro_recall": 0.9457555555555555,
+    "macro_f1": 0.9454165418377534,
+    "weighted_f1": 0.9470675262135443
+  },
+  "rounded_printed_validation_cell_29": {"accuracy_percent": 94.64, "loss": 0.1688},
+  "printed_efficiency_cell_30": {
+    "checkpoint_MiB": 0.06554126739501953,
+    "median_model_only_latency_ms": 0.9206239999457466,
+    "p95_model_only_latency_ms": 1.0531665997859818,
+    "device": "CUDA Tesla T4, per recorded notebook output; not an edge-device measurement"
+  },
+  "limitations": "Printed outputs are not independent evidence of a controlled run. No trained-file size or latency was remeasured, and the result is not used to replace Model B."
+}

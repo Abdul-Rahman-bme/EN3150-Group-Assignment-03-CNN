@@ -1,0 +1,37 @@
+\begin{tabular}{lrrr}
+\toprule
+Operation & Output C x H x W & Formula & Params \\
+\midrule
+Conv2d k3 s1 p1 g1 & 16 x 64 x 64 & 16 x 3 x 3 x 3 + 0 & 432 \\
+BatchNorm2d & 16 x 64 x 64 & 2 x 16 & 32 \\
+ReLU & 16 x 64 x 64 & 0 & 0 \\
+Conv2d k3 s2 p1 g16 & 16 x 32 x 32 & 16 x 1 x 3 x 3 + 0 & 144 \\
+BatchNorm2d & 16 x 32 x 32 & 2 x 16 & 32 \\
+ReLU & 16 x 32 x 32 & 0 & 0 \\
+Conv2d k1 s1 p0 g1 & 32 x 32 x 32 & 32 x 16 x 1 x 1 + 0 & 512 \\
+BatchNorm2d & 32 x 32 x 32 & 2 x 32 & 64 \\
+ReLU & 32 x 32 x 32 & 0 & 0 \\
+Conv2d k3 s2 p1 g32 & 32 x 16 x 16 & 32 x 1 x 3 x 3 + 0 & 288 \\
+BatchNorm2d & 32 x 16 x 16 & 2 x 32 & 64 \\
+ReLU & 32 x 16 x 16 & 0 & 0 \\
+Conv2d k1 s1 p0 g1 & 48 x 16 x 16 & 48 x 32 x 1 x 1 + 0 & 1,536 \\
+BatchNorm2d & 48 x 16 x 16 & 2 x 48 & 96 \\
+ReLU & 48 x 16 x 16 & 0 & 0 \\
+Conv2d k3 s1 p1 g48 & 48 x 16 x 16 & 48 x 1 x 3 x 3 + 0 & 432 \\
+BatchNorm2d & 48 x 16 x 16 & 2 x 48 & 96 \\
+ReLU & 48 x 16 x 16 & 0 & 0 \\
+Conv2d k1 s1 p0 g1 & 48 x 16 x 16 & 48 x 48 x 1 x 1 + 0 & 2,304 \\
+BatchNorm2d & 48 x 16 x 16 & 2 x 48 & 96 \\
+ReLU & 48 x 16 x 16 & 0 & 0 \\
+Conv2d k3 s2 p1 g48 & 48 x 8 x 8 & 48 x 1 x 3 x 3 + 0 & 432 \\
+BatchNorm2d & 48 x 8 x 8 & 2 x 48 & 96 \\
+ReLU & 48 x 8 x 8 & 0 & 0 \\
+Conv2d k1 s1 p0 g1 & 80 x 8 x 8 & 80 x 48 x 1 x 1 + 0 & 3,840 \\
+BatchNorm2d & 80 x 8 x 8 & 2 x 80 & 160 \\
+ReLU & 80 x 8 x 8 & 0 & 0 \\
+AdaptiveAvgPool2d & 80 x 1 x 1 & 0 & 0 \\
+Flatten & 80 & 0 & 0 \\
+Dropout & 80 & 0 & 0 \\
+Linear & 10 & 80 x 10 + 10 & 810 \\
+\bottomrule
+\end{tabular}

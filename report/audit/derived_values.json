@@ -1,0 +1,20 @@
+{
+  "selected_B_vs_A": {
+    "parameter_reduction_percent": 51.063717523901985,
+    "MAC_reduction_percent": 55.04479647828377,
+    "accuracy_difference_percentage_points": 0.4691358024691339,
+    "additional_correct_test_images": 19
+  },
+  "MobileNetV2_parameter_ratio_to_B": 48.23241972699631,
+  "ShuffleNetV2_parameter_ratio_to_B": 7.591529553835206,
+  "custom_normalization_source": "outputs/custom_cnn/model_a_adam_lr0.001/config.json",
+  "layer_formula_sources": "tables/*_layers.csv",
+  "numeric_constant_sources": {
+    "seed_batch_epochs_lr_weight_decay": "saved run configs; optimizer_comparison.csv",
+    "split_proportions_and_limits": "EN3150_Assignment_03_In23.pdf",
+    "group_number": "user supplied 54",
+    "team_names": "README.md and git show c6c64fe:README.md"
+  },
+  "historical_compact_notebook": "notebooks/03_model_B_compact_cnn.ipynb cells 3, 14, 16, 24, 26, 28-30",
+  "model_D_claims": "origin/nipun:docs/model_d_results.md (unverified prose; excluded from master table)"
+}

@@ -1,0 +1,32 @@
+layer,operation,output,formula,parameters,macs
+features.0,Conv2d k3 s1 p1 g1,16 x 64 x 64,16 x 3 x 3 x 3 + 0,432,1769472
+features.1,BatchNorm2d,16 x 64 x 64,2 x 16,32,0
+features.2,ReLU,16 x 64 x 64,0,0,0
+features.3.layers.0,Conv2d k3 s2 p1 g16,16 x 32 x 32,16 x 1 x 3 x 3 + 0,144,147456
+features.3.layers.1,BatchNorm2d,16 x 32 x 32,2 x 16,32,0
+features.3.layers.2,ReLU,16 x 32 x 32,0,0,0
+features.3.layers.3,Conv2d k1 s1 p0 g1,32 x 32 x 32,32 x 16 x 1 x 1 + 0,512,524288
+features.3.layers.4,BatchNorm2d,32 x 32 x 32,2 x 32,64,0
+features.3.relu,ReLU,32 x 32 x 32,0,0,0
+features.4.layers.0,Conv2d k3 s2 p1 g32,32 x 16 x 16,32 x 1 x 3 x 3 + 0,288,73728
+features.4.layers.1,BatchNorm2d,32 x 16 x 16,2 x 32,64,0
+features.4.layers.2,ReLU,32 x 16 x 16,0,0,0
+features.4.layers.3,Conv2d k1 s1 p0 g1,48 x 16 x 16,48 x 32 x 1 x 1 + 0,1536,393216
+features.4.layers.4,BatchNorm2d,48 x 16 x 16,2 x 48,96,0
+features.4.relu,ReLU,48 x 16 x 16,0,0,0
+features.5.layers.0,Conv2d k3 s1 p1 g48,48 x 16 x 16,48 x 1 x 3 x 3 + 0,432,110592
+features.5.layers.1,BatchNorm2d,48 x 16 x 16,2 x 48,96,0
+features.5.layers.2,ReLU,48 x 16 x 16,0,0,0
+features.5.layers.3,Conv2d k1 s1 p0 g1,48 x 16 x 16,48 x 48 x 1 x 1 + 0,2304,589824
+features.5.layers.4,BatchNorm2d,48 x 16 x 16,2 x 48,96,0
+features.5.relu,ReLU,48 x 16 x 16,0,0,0
+features.6.layers.0,Conv2d k3 s2 p1 g48,48 x 8 x 8,48 x 1 x 3 x 3 + 0,432,27648
+features.6.layers.1,BatchNorm2d,48 x 8 x 8,2 x 48,96,0
+features.6.layers.2,ReLU,48 x 8 x 8,0,0,0
+features.6.layers.3,Conv2d k1 s1 p0 g1,80 x 8 x 8,80 x 48 x 1 x 1 + 0,3840,245760
+features.6.layers.4,BatchNorm2d,80 x 8 x 8,2 x 80,160,0
+features.6.relu,ReLU,80 x 8 x 8,0,0,0
+head.0,AdaptiveAvgPool2d,80 x 1 x 1,0,0,0
+head.1,Flatten,80,0,0,0
+head.2,Dropout,80,0,0,0
+head.3,Linear,10,80 x 10 + 10,810,800

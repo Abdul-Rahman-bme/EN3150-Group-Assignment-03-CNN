@@ -1,0 +1,31 @@
+{
+  "sizes": {
+    "train": 18900,
+    "validation": 4050,
+    "test": 4050
+  },
+  "class_names": [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake"
+  ],
+  "split_sha256": {
+    "train": "63de224c0a81777d455626785473e7eed5bf60092c1050cab3049621a02871f2",
+    "validation": "721caa77c99bf40d6cd3c1600af43926f258c898bf251f8b2f2c2ea1c21f6165",
+    "test": "7d72f8a26e3b3e9a60292a73ef76095fc4c719860bd3b022e588431dc49f6a73"
+  },
+  "unique_pixel_hashes": 27000,
+  "compact_algorithm_reconstructed_membership": {
+    "train": true,
+    "validation": true,
+    "test": true
+  },
+  "pixel_verification": "Not rerun: raw images absent. Saved hashes are unique; no image-content claim."
+}

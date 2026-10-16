@@ -1,0 +1,12 @@
+# Keep the editable report, selected final PDF and vector report figures.
+!54_A03_EN3150.pdf
+!figures/*.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+__pycache__/
