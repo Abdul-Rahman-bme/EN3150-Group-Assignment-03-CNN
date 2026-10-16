@@ -3,6 +3,7 @@
 import torch
 from torch import nn
 from .model_specs import CUSTOM_MODELS, PRETRAINED_MODELS, PRETRAINED_SPECS
+from .compact import CompactEuroSAT
 
 
 class StandardCNN(nn.Module):
@@ -105,7 +106,8 @@ def build_model(name, num_classes=10, *, pretrained=False, pretrained_weights_fi
         if pretrained or pretrained_weights_file is not None:
             raise ValueError("ImageNet initialization only applies to the two pretrained candidates")
         return {"model_a": StandardCNN, "model_b": LightweightCNN,
-                "model_c": WideLightweightCNN}[name](num_classes)
+                "model_c": WideLightweightCNN,
+                "compact_eurosat": CompactEuroSAT}[name](num_classes)
     if name not in PRETRAINED_MODELS:
         raise ValueError(f"Unsupported model: {name}")
     if pretrained_weights_file is not None and not pretrained:
