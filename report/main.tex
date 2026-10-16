@@ -221,6 +221,26 @@ recover validation performance relative to the initial lightweight baseline whil
 below the parameter cap. One seed and a small learning-rate grid do not establish a universal
 optimizer ranking; neither optimizer family was exhaustively tuned.
 
+\subsection{Additional Exploratory Model D: Residual Depthwise CNN}
+
+As an additional architectural exploration, a compact Residual Depthwise CNN
+was integrated into the project. The model combines depthwise-separable
+convolutions with residual connections to reduce the computational and
+parameter requirements while maintaining feature reuse through shortcut
+connections.
+
+The implemented model contains 15,442 trainable parameters and accepts
+64 $\times$ 64 RGB images, producing predictions for the 10 EuroSAT classes.
+The architecture and parameter count were independently verified using the
+shared project implementation, and its forward pass was confirmed using a
+batch of four input images.
+
+The original training artifacts for this model were not available for
+independent reproduction. Therefore, the previously reported training
+accuracy is not included in the verified performance comparison. Model D is
+treated as an additional architectural exploration rather than as a
+replacement for the required Model B.
+
 \section{Custom model training and evaluation}
 \subsection{Training setup and learning curves}
 The final custom runs use seed 42, batch size 64, Adam 0.001, weight decay 0.0001 and
