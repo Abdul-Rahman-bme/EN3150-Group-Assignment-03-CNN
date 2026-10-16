@@ -41,15 +41,20 @@ the primary comparison.
    fast-forward update to remote `simple_model`; command succeeded.
 7. Committed shared-pipeline candidate implementation and meaningful tests as
    `49d74a0` (`Add CompactEuroSAT candidate to the common training pipeline`).
-8. Added the report, generator, evidence tables/figures and audit documentation;
-   the final commit and push status are recorded in the task's final response.
+8. Committed report, generator, evidence tables/figures and audit documentation as
+   `df473ae`; normal push to `simple_model` succeeded.
+9. Created draft PR #7, titled "Evaluate CompactEuroSAT as a candidate lightweight
+   Model B": https://github.com/Abdul-Rahman-bme/EN3150-Group-Assignment-03-CNN/pull/7.
+   It is intentionally not merged; controlled candidate validation is pending.
 
 No force push, hard reset, branch deletion, main merge, result replacement or
 historical notebook rewrite was performed. Main remains the canonical selected
 model state. A draft PR is appropriate; merging is not justified until controlled
 candidate validation is available.
 
-Git read and push authentication work through the platform proxy. The raw
-`gh` token status is unusable and `api.github.com` returned proxy 403; these do
-not imply missing Git access. The needed API and dataset hosts were saved to an
-environment network draft, which still needs user review/save/publication.
+Git read/push and actual GitHub CLI PR creation work through the platform's
+supported authentication. The earlier `gh auth status` reported an unusable token,
+and direct curl to `api.github.com` returned proxy 403, but the real `gh pr create`
+operation succeeded. No replacement token is needed. Dataset routes remain
+blocked; dataset/API domains were saved in the environment network draft for
+review/save/publication. A draft save does not itself apply runtime access.
