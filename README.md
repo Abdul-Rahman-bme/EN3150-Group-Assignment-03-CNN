@@ -209,9 +209,10 @@ architectures.
 | MobileNetV2 | `mobilenet_v2` | Pretrained | 2,236,682 | 24,461,312 | 98.12% |
 | ShuffleNetV2 x0.5 | `shufflenet_v2_x0_5` | Pretrained | 352,042 | 3,230,848 | 96.37% |
 
-\* CompactEuroSAT and Model D are additional experiments and are discussed
-separately because their experiment/evidence status differs from the four
-controlled final test reports.
+\* CompactEuroSAT is retained as an additional candidate experiment because its
+historical 94.72% result was not obtained under the final controlled
+training/evaluation protocol. Model D has final reproducible training and test
+evidence and is therefore included in the verified comparison.
 
 ---
 
@@ -1093,11 +1094,12 @@ The recorded epoch-30 timing was:
 
 | Measurement | Time |
 |---|---:|
-| Training | 21.7 s |
-| Validation | 3.0 s |
+| Training | 21.34 s |
+| Validation | 2.94 s |
 
-These values describe the last recorded epoch and are not average timing
-benchmarks.
+These values describe the last recorded epoch. The mean training time across
+all 30 epochs was **21.23 s/epoch**; neither measurement is a hardware-neutral
+benchmark.
 
 ## 10.7 Selected checkpoint validation
 
@@ -1131,9 +1133,9 @@ The selected checkpoint was evaluated on the separate 4,050-image test set.
 | Macro precision | 93.43% |
 | Macro recall | 93.42% |
 | Macro F1 | 93.40% |
-| Complete test-pass time | 3.79 s |
+| Complete test-pass time | 3.07 s |
 
-The 3.79-second value includes:
+The 3.07-second value includes:
 
 - Image loading
 - Device transfers
@@ -1395,18 +1397,23 @@ measured inference speed.
 
 ---
 
-# 16. Additional Model Comparison
+# 16. Verified Model Comparison and Compact Candidate
 
-CompactEuroSAT remains separate because its historical 94.72% result used a different training protocol. Model D is now supported by saved training and final-test evidence and is included in the verified comparison.
+The verified comparison uses the saved final evidence for the five models below.
+Model D is included because its configuration, history, predictions, per-class
+metrics and confusion matrices are committed and auditable.
 
 | Model | Parameters | MACs/image | Test accuracy | Status |
 |---|---:|---:|---:|---|
+| Standard Model A | 94,762 | 41,288,960 | 93.90% | Verified final experiment |
 | Final Model B (`model_c`) | 46,373 | 18,561,536 | 94.37% | Final controlled model |
-| CompactEuroSAT | 11,466 | 3,882,784 | 94.72%* | Historical additional experiment |
 | Model D | 15,442 | 4,728,768 | 93.63% | Verified additional experiment |
+| MobileNetV2 | 2,236,682 | 24,461,312 | 98.12% | Verified final experiment |
+| ShuffleNetV2 x0.5 | 352,042 | 3,230,848 | 96.37% | Verified final experiment |
 
-\* These results should not be treated as identical-protocol replacements for
-the four-model final comparison.
+CompactEuroSAT (11,466 parameters, 3,882,784 MACs/image, historical 94.72%
+test accuracy) remains a separate candidate because that result used a different
+training/evaluation protocol. It is not ranked as equivalent controlled evidence.
 
 ---
 
@@ -1487,6 +1494,7 @@ The final selected configurations were:
 |---|---|---:|---:|---:|---:|
 | Model A | Adam | 0.001 | 30 | 0.172110 | 94.123% |
 | Final Model B | Adam | 0.001 | 28 | 0.177609 | 94.000% |
+| Model D | Adam | 0.001 | 30 | 0.180202 | 94.173% |
 | MobileNetV2 | Adam | 0.0001 | 27 | 0.057098 | 98.025% |
 | ShuffleNetV2 x0.5 | Adam | 0.0001 | 29 | 0.112948 | 96.198% |
 
@@ -1498,12 +1506,13 @@ The final test set was not used for selecting these configurations.
 
 The saved training histories contain training timing information.
 
-For the four controlled final experiments:
+For the five verified final experiments:
 
 | Model | Selected epoch | Mean training time/epoch | Median time/epoch | Total training time |
 |---|---:|---:|---:|---:|
 | Model A | 30 | 26.7768 s | 25.2465 s | 13.388 min |
 | Final Model B | 28 | 30.5324 s | 23.7360 s | 15.266 min |
+| Model D | 30 | 21.2270 s | 21.3065 s | 10.614 min |
 | MobileNetV2 | 27 | 42.1579 s | 32.8674 s | 21.079 min |
 | ShuffleNetV2 x0.5 | 29 | 37.2639 s | 25.8794 s | 18.632 min |
 
@@ -1522,18 +1531,18 @@ The following results are from the four controlled final test reports plus the c
 
 The support values are the same across all models.
 
-| Class | Support | Model A P/R/F1 | Final Model B P/R/F1 | MobileNetV2 P/R/F1 | ShuffleNetV2 P/R/F1 |
-|---|---:|---|---|---|---|
-| AnnualCrop | 450 | 95.91 / 88.67 / 92.15 | 92.46 / 92.67 / 92.56 | 96.92 / 98.00 / 97.46 | 95.10 / 94.89 / 94.99 |
-| Forest | 450 | 97.18 / 99.56 / 98.35 | 98.23 / 98.89 / 98.56 | 98.68 / 99.78 / 99.23 | 97.81 / 99.33 / 98.57 |
-| HerbaceousVegetation | 450 | 88.84 / 95.56 / 92.08 | 90.87 / 92.89 / 91.87 | 97.58 / 98.67 / 98.12 | 96.00 / 96.00 / 96.00 |
-| Highway | 375 | 95.42 / 88.80 / 91.99 | 95.56 / 86.13 / 90.60 | 98.12 / 97.33 / 97.72 | 92.88 / 93.87 / 93.37 |
-| Industrial | 375 | 97.50 / 93.60 / 95.51 | 96.34 / 98.13 / 97.23 | 98.92 / 97.33 / 98.12 | 98.13 / 98.13 / 98.13 |
-| Pasture | 300 | 94.39 / 95.33 / 94.86 | 91.28 / 97.67 / 94.36 | 97.27 / 95.00 / 96.12 | 93.85 / 96.67 / 95.24 |
-| PermanentCrop | 375 | 85.64 / 89.07 / 87.32 | 92.00 / 85.87 / 88.83 | 97.81 / 95.20 / 96.49 | 93.22 / 91.73 / 92.47 |
-| Residential | 450 | 94.68 / 98.89 / 96.74 | 98.66 / 98.00 / 98.33 | 97.82 / 99.78 / 98.79 | 99.11 / 99.33 / 99.22 |
-| River | 375 | 90.79 / 89.33 / 90.05 | 88.19 / 93.60 / 90.82 | 98.66 / 98.40 / 98.53 | 96.67 / 92.80 / 94.69 |
-| SeaLake | 450 | 98.66 / 98.22 / 98.44 | 98.67 / 98.67 / 98.67 | 99.34 / 100.00 / 99.67 | 99.33 / 99.56 / 99.45 |
+| Class | Support | Model A P/R/F1 | Final Model B P/R/F1 | Model D P/R/F1 | MobileNetV2 P/R/F1 | ShuffleNetV2 P/R/F1 |
+|---|---:|---|---|---|---|---|
+| AnnualCrop | 450 | 95.91 / 88.67 / 92.15 | 92.46 / 92.67 / 92.56 | 90.20 / 92.00 / 91.09 | 96.92 / 98.00 / 97.46 | 95.10 / 94.89 / 94.99 |
+| Forest | 450 | 97.18 / 99.56 / 98.35 | 98.23 / 98.89 / 98.56 | 98.22 / 98.22 / 98.22 | 98.68 / 99.78 / 99.23 | 97.81 / 99.33 / 98.57 |
+| HerbaceousVegetation | 450 | 88.84 / 95.56 / 92.08 | 90.87 / 92.89 / 91.87 | 92.41 / 92.00 / 92.20 | 97.58 / 98.67 / 98.12 | 96.00 / 96.00 / 96.00 |
+| Highway | 375 | 95.42 / 88.80 / 91.99 | 95.56 / 86.13 / 90.60 | 89.07 / 89.07 / 89.07 | 98.12 / 97.33 / 97.72 | 92.88 / 93.87 / 93.37 |
+| Industrial | 375 | 97.50 / 93.60 / 95.51 | 96.34 / 98.13 / 97.23 | 93.49 / 95.73 / 94.60 | 98.92 / 97.33 / 98.12 | 98.13 / 98.13 / 98.13 |
+| Pasture | 300 | 94.39 / 95.33 / 94.86 | 91.28 / 97.67 / 94.36 | 92.23 / 95.00 / 93.60 | 97.27 / 95.00 / 96.12 | 93.85 / 96.67 / 95.24 |
+| PermanentCrop | 375 | 85.64 / 89.07 / 87.32 | 92.00 / 85.87 / 88.83 | 87.86 / 88.80 / 88.33 | 97.81 / 95.20 / 96.49 | 93.22 / 91.73 / 92.47 |
+| Residential | 450 | 94.68 / 98.89 / 96.74 | 98.66 / 98.00 / 98.33 | 98.01 / 98.67 / 98.34 | 97.82 / 99.78 / 98.79 | 99.11 / 99.33 / 99.22 |
+| River | 375 | 90.79 / 89.33 / 90.05 | 88.19 / 93.60 / 90.82 | 94.13 / 85.60 / 89.66 | 98.66 / 98.40 / 98.53 | 96.67 / 92.80 / 94.69 |
+| SeaLake | 450 | 98.66 / 98.22 / 98.44 | 98.67 / 98.67 / 98.67 | 98.67 / 99.11 / 98.89 | 99.34 / 100.00 / 99.67 | 99.33 / 99.56 / 99.45 |
 
 Values are:
 
@@ -1858,7 +1867,8 @@ docs/custom_cnn_results.md
 
 ## 26.4 Final test evidence
 
-For the four controlled final models, the repository retains or indexes:
+For the four assignment-required final models and the verified Model D run, the
+repository retains or indexes:
 
 - Test metrics
 - Per-class metrics
@@ -1869,6 +1879,10 @@ For the four controlled final models, the repository retains or indexes:
 - Training histories
 - Selected checkpoints where available
 - Resource measurements
+
+Model D's committed evidence is specifically under
+`outputs/custom_cnn/model_d_residual_numpy126/` and
+`outputs/reports/model_d_numpy126_final_test/`.
 
 ## 26.5 CompactEuroSAT evidence
 
@@ -2232,7 +2246,7 @@ python -m cnn_assignment train --model compact_eurosat --optimizer adam --lr 0.0
 ## Model D
 
 ```powershell
-python -m cnn_assignment train --model model_d --optimizer adam --lr 0.001 --epochs 30 --device auto --run-name model_d_residual_adam_v1
+python -m cnn_assignment train --model model_d --optimizer adam --lr 0.001 --epochs 30 --device auto --run-name model_d_residual_numpy126
 ```
 
 ## MobileNetV2
@@ -2260,7 +2274,7 @@ python -m cnn_assignment validate --run outputs/custom_cnn/model_c_adam_lr0.001 
 For Model D:
 
 ```powershell
-python -m cnn_assignment validate --run outputs/custom_cnn/model_d_residual_adam_v1 --compare-history
+python -m cnn_assignment validate --run outputs/custom_cnn/model_d_residual_numpy126 --compare-history
 ```
 
 Validation uses the validation split and can compare the evaluated result with
@@ -2287,7 +2301,7 @@ python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_a_adam_lr0
 For Model D:
 
 ```powershell
-python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_d_residual_adam_v1
+python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_d_residual_numpy126
 ```
 
 The final test set should only be used after the model/configuration has been
@@ -2509,7 +2523,7 @@ The following table records the current project status.
 | Momentum comparison | Complete | Saved momentum runs |
 | ≥20 epochs custom training | Complete | 30-epoch recorded runs |
 | Training/validation histories | Complete | Saved `history.csv` files |
-| Final test accuracy | Complete | Four final test reports |
+| Final test accuracy | Complete | Four required reports plus verified Model D |
 | Confusion matrices | Complete | Saved final reports |
 | Precision/recall/F1 | Complete | Saved final reports |
 | Custom-model size comparison | Complete | Parameter/MAC/storage tables |

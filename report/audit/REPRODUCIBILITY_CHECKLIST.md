@@ -28,7 +28,7 @@ the requirements. Report section numbers refer to `main.tex`.
 | Same split pretrained/custom | Canonical predictions and saved fingerprints agree, accounting explicitly for LF/CRLF |
 | Final trade-off analysis (20 marks) | Report §7; accuracy, stored size and computation, no universal-best claim |
 | Compact controlled run | Pipeline prepared; NOT RUN because images absent and hosts return proxy 403 |
-| Model D optional | Architecture only verified; Markdown result excluded from primary table |
+| Model D additional verified run | Config, 30-epoch history, predictions, per-class metrics and confusion matrices checked; included in primary comparison |
 | MAC definition | Conv/linear only, excludes BN/pooling/activation/memory; no latency equivalence |
 | Git history/profile | Preserved history since 10 September; profile and repository links in PDF |
 | Group identification | Group 54 supplied by user; four names/indices agree with original/current README |

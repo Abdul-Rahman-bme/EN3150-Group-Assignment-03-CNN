@@ -6,4 +6,4 @@ data/eurosat-pipeline,2fd5eeadca194fa8c7087521dda41ba643a00474,0,22,True,,preser
 setup/project-structure,177f953f8b224eff44b0c408524199134543ec17,0,28,True,,preserve; already integrated
 model/standard-cnn,e1841af21938e017ae20a7bd23b1ff4fe6cf4a25,0,20,True,,preserve; already integrated
 simple_model,7d81c513b206a31f59cdb2b175a0aeb1ab461853,18,19,False,lightweight_CNN; notebooks/03_model_B_compact_cnn.ipynb,synchronized locally; preserve historical notebook; candidate pending controlled run
-nipun,5bafe7f7205146505f7af2b21ef9f242c441df0b,3,0,False,docs/model_d_results.md; src/cnn_assignment/model_specs.py; src/cnn_assignment/models.py,preserve optional architecture; obtain primary experiment artifacts before comparison
+nipun,5bafe7f7205146505f7af2b21ef9f242c441df0b,3,0,False,docs/model_d_results.md; src/cnn_assignment/model_specs.py; src/cnn_assignment/models.py,historical branch later integrated; final experiment artifacts are now on main

@@ -18,11 +18,12 @@ python report/validate_pdf.py
 ```
 
 Python dependencies are the project environment plus scikit-learn and matplotlib.
-The generator uses Git to inspect `origin/nipun`'s architecture and the audited
-remote refs, without merging Model D. Fetch the requested branches before running
-it in a fresh checkout. The LaTeX build requires TeX Live with pdfLaTeX, BibTeX,
-TikZ, booktabs, natbib, xurl, lmodern and microtype. PDF validation uses Poppler's
-`pdftotext` and `pdfinfo`. No shell escape is used.
+The generator uses the integrated `model_d` implementation and committed final
+evidence, while retaining the original remote-ref audit for provenance. Fetch the
+audited refs before running it in a fresh checkout. The LaTeX build requires TeX
+Live with pdfLaTeX, BibTeX,
+TikZ, booktabs, natbib, xurl, lmodern and microtype. PDF validation uses `pypdf`
+plus the LaTeX build log. No shell escape is used.
 The generator asserts consistency before writing comparison results; it performs
 no training and never changes the historical data/notebooks.
 
@@ -33,7 +34,7 @@ contains branch, split, provenance, candidate-cost and test evidence.
 
 ## Evidence levels and limitations
 
-- All four final prediction files match the canonical test memberships and order.
+- All five verified final prediction files match the canonical test memberships and order.
   Accuracy, macro precision/recall/F1, per-class metrics and confusion matrices
   were recalculated and agree with the saved reports.
 - Parameter and conv/linear MAC counts were recalculated from executed source.
@@ -44,9 +45,9 @@ contains branch, split, provenance, candidate-cost and test evidence.
   but its batch size, scheduler, augmentation and selection rule differ. Its
   printed 94.72% is historical evidence, not a new controlled result. The exact
   Kaggle manifests/checkpoint are absent.
-- Model D's architecture costs were independently checked, but its results are
-  Markdown-only claims without committed primary run artifacts. It is excluded
-  from the verified master comparison.
+- Model D's architecture costs and committed final artifacts were independently
+  checked. Its configuration, history, predictions, per-class metrics and
+  confusion matrices support inclusion in the verified master comparison.
 - Dataset downloads from Zenodo, the deprecated official host and the user-supplied
   Hugging Face URL returned proxy 403. Required dataset/API domains were saved in
   the environment draft for review/save/publication; that does not apply runtime

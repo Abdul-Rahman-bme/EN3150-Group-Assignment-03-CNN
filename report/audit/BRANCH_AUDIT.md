@@ -12,21 +12,21 @@ before the new local synchronization and candidate/report work.
 
 | Branch | Ahead / behind | Unique useful work | Status / action |
 |---|---:|---|---|
-| main | 0 / 0 | Canonical integrated source, splits, 12 custom histories and four final prediction/report sets | Preserve unchanged |
+| main | 0 / 0 | Audited baseline source, splits, 12 custom histories and four required prediction/report sets; Model D was integrated later | Preserve as historical baseline |
 | heshan | 0 / 0 | Same tip as main | Already integrated; no merge needed |
 | integration/heshan-main-20261009 | 0 / 1 | Historical integration and PR handoff | Ancestor of main; preserve |
 | data/eurosat-pipeline | 0 / 22 | Original preparation notebook and dataset documentation | Already merged via PR #4; preserve |
 | setup/project-structure | 0 / 28 | Original shared structure | Already merged; preserve |
 | model/standard-cnn | 0 / 20 | Original standard-CNN notebook | Already merged via PR #5; preserve |
 | simple_model | 18 / 19 | `notebooks/03_model_B_compact_cnn.ipynb`, `lightweight_CNN`; CompactEuroSAT architecture and historical printed results | Useful candidate; synchronized normally with main, no conflicts |
-| nipun | 3 / 0 | `ResidualDepthwiseCNN`, registration and `docs/model_d_results.md` | Preserve separate optional experiment; primary run artifacts absent |
+| nipun | 3 / 0 | `ResidualDepthwiseCNN`, registration and `docs/model_d_results.md` | Historical branch later integrated; final Model D evidence is now on `main` |
 
 Already-integrated branch tips contain no unmerged commits; historical work is
 retained by main's ancestry. They were not merged again or deleted. The two
 CompactEuroSAT notebook files remain byte-for-byte as on the pre-sync branch.
-Nipun changes were inspected as source; only its two architecture class definitions
-were executed for cost/shape analysis. Its Markdown result is not promoted into
-the primary comparison.
+Nipun changes were initially inspected as source only. That historical limitation
+was later superseded when the implementation and completed Model D run evidence
+were integrated into `main`; Model D is now included in the verified comparison.
 
 ## Actions performed
 

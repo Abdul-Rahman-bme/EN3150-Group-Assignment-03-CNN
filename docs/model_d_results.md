@@ -63,7 +63,7 @@ Depthwise-separable convolutions reduce computation relative to full convolution
 | Batch size | 64 |
 | Random seed | 42 (project CLI default) |
 | Device | CUDA |
-| Run name | `model_d_residual_adam_v1` |
+| Run name | `model_d_residual_numpy126` |
 | Checkpoint rule | Lowest validation loss |
 
 The final training epoch reported:
@@ -74,10 +74,11 @@ The final training epoch reported:
 | Training accuracy | 93.30% |
 | Validation loss | 0.1802 |
 | Validation accuracy | 94.17% |
-| Training time, epoch 30 only | 21.7 s |
-| Validation time, epoch 30 only | 3.0 s |
+| Training time, epoch 30 only | 21.34 s |
+| Validation time, epoch 30 only | 2.94 s |
 
-These timing values describe the **last epoch**, not the average time over 30 epochs.
+These timing values describe the **last epoch**. The mean training time over all
+30 epochs was **21.23 s/epoch**.
 
 ## 5. Best-checkpoint validation
 
@@ -107,7 +108,7 @@ The selected best-validation checkpoint was evaluated on the separate 4,050-imag
 | Macro precision | **93.43%** |
 | Macro recall | **93.42%** |
 | Macro F1 | **93.40%** |
-| Evaluation time for entire test pass | **3.79 s** |
+| Evaluation time for entire test pass | **3.07 s** |
 
 The reported pass time includes image loading, device transfers, loss calculation, and prediction collection, with CUDA synchronization. It should **not** be interpreted as pure model inference time or edge-device performance.
 
@@ -152,19 +153,21 @@ Compared with **Model A**, Model D has 0.27 percentage points lower test accurac
 Run from the repository root with the project environment activated and EuroSAT RGB images at the configured data root:
 
 ```powershell
-python -m cnn_assignment train --model model_d --optimizer adam --lr 0.001 --epochs 30 --device auto --run-name model_d_residual_adam_v1
-python -m cnn_assignment validate --run outputs/custom_cnn/model_d_residual_adam_v1 --compare-history
-python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_d_residual_adam_v1
-python -m cnn_assignment plot --run outputs/custom_cnn/model_d_residual_adam_v1
+python -m cnn_assignment train --model model_d --optimizer adam --lr 0.001 --epochs 30 --device auto --run-name model_d_residual_numpy126
+python -m cnn_assignment validate --run outputs/custom_cnn/model_d_residual_numpy126 --compare-history
+python -m cnn_assignment evaluate-test --run outputs/custom_cnn/model_d_residual_numpy126
+python -m cnn_assignment plot --run outputs/custom_cnn/model_d_residual_numpy126
 ```
 
 **Existing local artifacts:**
 
-- Run history/config/checkpoints: `outputs/custom_cnn/model_d_residual_adam_v1/`
-- Validation report: `outputs/reports/validate_20261015T130850849632Z/`
-- Test report: `outputs/reports/evaluate-test_20261015T130916906896Z/`
+- Committed run history/config: `outputs/custom_cnn/model_d_residual_numpy126/`
+- Committed final-test report: `outputs/reports/model_d_numpy126_final_test/`
 
-These artifact paths are from the experiment machine. Raw images and model checkpoints are intentionally not committed in the group's Git repository; preserve them locally or share them through the team's agreed artifact process.
+Raw images and model checkpoints are intentionally not committed in the group's
+Git repository. The committed configuration, history, predictions, metrics,
+per-class results and confusion matrices support the reported comparison; exact
+trained-model inference additionally requires the original checkpoint and images.
 
 ## 10. Summary
 

@@ -38,6 +38,6 @@
     }
   },
   "nipun_ref": "5bafe7f7205146505f7af2b21ef9f242c441df0b",
-  "model_d_results_status": "Markdown claims only; no run config/history/predictions/checkpoint in branch",
+  "model_d_results_status": "Verified from committed config, history, metrics, predictions, per-class results and confusion matrices; checkpoint file is not committed",
   "compact_results_status": "Historical notebook output; controlled common-protocol run blocked by absent images"
 }

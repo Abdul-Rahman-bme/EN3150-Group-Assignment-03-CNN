@@ -1,14 +1,14 @@
 # My final assignment results
 
-I consolidate the four existing final test reports and the saved histories. I did not rerun models, train, or evaluate the test set during this consolidation. These are EuroSAT test results, separate from the validation results used for selection and the published ImageNet results in [my pretrained selection notes](pretrained_model_selection.md).
+I consolidate the four assignment-required final test reports and their saved histories. Model D now supplies a fifth verified comparison through its separate committed run record in [the Model D results](model_d_results.md). I did not rerun models, train, or evaluate the test set during this consolidation. These are EuroSAT test results, separate from the validation results used for selection and the published ImageNet results in [my pretrained selection notes](pretrained_model_selection.md).
 
-In this report, **Model A is `model_a`** and **final lightweight Model B is `model_c`**. Existing `model_b` remains my initial lightweight design baseline. Its 12,965 parameters and 5,141,760 MACs provide design context; it is not one of the four final test reports. I keep every code identifier and saved path unchanged. Historical notebook sections use the original A/B/C labels.
+In this report, **Model A is `model_a`** and **final lightweight Model B is `model_c`**. Existing `model_b` remains my initial lightweight design baseline. Its 12,965 parameters and 5,141,760 MACs provide design context; it is not one of the four assignment-required final test reports. I keep every code identifier and saved path unchanged. Historical notebook sections use the original A/B/C labels.
 
 I selected `model_c` using validation results. Its 46,373 trainable parameters satisfy the 100,000 cap. Each final run has one seed (42) and 30 completed epochs. I selected each checkpoint by minimum validation loss, so its validation accuracy need not be its maximum-accuracy epoch. I keep the selected configurations fixed after viewing the test results.
 
 ## Final test metrics
 
-All four reports use the same 4,050 test images, class order and 64 x 64 RGB inputs. Macro averages give each class equal weight. Percentages below are computed from the saved full-precision values; display rounding does not drive calculations.
+All four assignment-required reports use the same 4,050 test images, class order and 64 x 64 RGB inputs; the verified Model D report uses that same saved test split and class order. Macro averages give each class equal weight. Percentages below are computed from the saved full-precision values; display rounding does not drive calculations.
 
 | Model | Loss | Accuracy (%) | Macro precision (%) | Macro recall (%) | Macro F1 (%) |
 | --- | --- | --- | --- | --- | --- |

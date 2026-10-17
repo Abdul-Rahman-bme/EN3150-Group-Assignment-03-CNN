@@ -226,3 +226,26 @@ shufflenet_v2_x0_5,mean_train_seconds_excluding_first,31.275347793103343,outputs
 shufflenet_v2_x0_5,test_pass_seconds,3.7112422000027436,outputs/reports/evaluate-test_20261009T051458714369Z/metrics.json; outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv,saved artifact / source calculation
 shufflenet_v2_x0_5,report,outputs/reports/evaluate-test_20261009T051458714369Z,outputs/reports/evaluate-test_20261009T051458714369Z/metrics.json; outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv,saved artifact / source calculation
 shufflenet_v2_x0_5,run_path,outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1,outputs/reports/evaluate-test_20261009T051458714369Z/metrics.json; outputs/pretrained_cnn/shufflenet_v2_x0_5_adam_lr0.0001_initial1/history.csv,saved artifact / source calculation
+model_d,code,model_d,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,model,Model D,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,architecture,residual depthwise,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,parameters,15442,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,total_parameters,15442,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,fp32_parameter_KB,61.768,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,recorded_weight_bytes,82062,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,"recorded, not remeasured: checkpoint absent"
+model_d,recorded_weight_MB,0.082062,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,"recorded, not remeasured: checkpoint absent"
+model_d,recorded_weight_KB,82.062,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,"recorded, not remeasured: checkpoint absent"
+model_d,weight_size_status,recorded in saved metrics; trained file unavailable for remeasurement,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,macs,4728768,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,selected_epoch,30,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,val_loss,0.1802019565340913,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,val_accuracy,0.9417283950617285,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,accuracy,0.9362962962962963,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,independently recomputed from predictions
+model_d,macro_precision,0.9343017802473179,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,independently recomputed from predictions
+model_d,macro_recall,0.9342,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,independently recomputed from predictions
+model_d,macro_f1,0.934001052075984,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,independently recomputed from predictions
+model_d,mean_train_seconds,21.227016269999634,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,mean_train_seconds_excluding_first,21.3064841103448,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,test_pass_seconds,3.073092500009807,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,report,outputs/reports/model_d_numpy126_final_test,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation
+model_d,run_path,outputs/custom_cnn/model_d_residual_numpy126,outputs/reports/model_d_numpy126_final_test/metrics.json; outputs/custom_cnn/model_d_residual_numpy126/history.csv,saved artifact / source calculation

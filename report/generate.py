@@ -5,7 +5,6 @@ Assertions deliberately fail if metrics, memberships or architectural counts dis
 Historical hashes are compared with both literal and CRLF serializations, without
 rewriting their files. Checkpoint sizes remain recorded evidence when files are absent.
 """
-import ast
 import hashlib
 import json
 from pathlib import Path
@@ -41,12 +40,21 @@ def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT).decode().strip()
 
 
+def git_bytes(*args):
+    return subprocess.check_output(['git', *args], cwd=ROOT)
+
+
 def load(path):
     return json.loads((ROOT / path).read_text(encoding='utf-8-sig'))
 
 
 def dump(path, value):
     path.write_text(json.dumps(value, indent=2, default=lambda x: x.item()) + '\n')
+
+
+def rel(path):
+    """Return a repository-relative path with stable separators on every OS."""
+    return path.relative_to(ROOT).as_posix()
 
 
 def tex(value):
@@ -79,7 +87,7 @@ for name, frame in frames.items():
     data = path.read_bytes()
     crlf = hashlib.sha256(data.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')).hexdigest()
     hash_rows.append({'split': name, 'literal_sha256': hashlib.sha256(data).hexdigest(), 'crlf_sha256': crlf})
-    record('dataset', name + '_count', len(frame), str(path.relative_to(ROOT)))
+    record('dataset', name + '_count', len(frame), rel(path))
 pd.DataFrame(hash_rows).to_csv(AUDIT / 'split_hashes.csv', index=False)
 counts = pd.DataFrame({n: f.groupby('class_name').size().reindex(classes) for n, f in frames.items()})
 counts.to_csv(TABLE / 'class_distribution.csv')
@@ -103,6 +111,8 @@ dump(AUDIT / 'split_audit.json', {**split_check, 'compact_algorithm_reconstructe
 optimizer_rows = []
 for path in sorted((ROOT / 'outputs/custom_cnn').glob('*/config.json')):
     c = json.loads(path.read_text()); h = pd.read_csv(path.parent / 'history.csv')
+    if c['model'] == 'model_d':
+        continue  # Model D is a verified final run, not part of the 12-run A/B optimizer sweep.
     assert h.epoch.tolist() == list(range(1, 31))
     best = h.loc[h.val_loss.idxmin()]
     row = {'run': path.parent.name, 'model': c['model'], 'optimizer': c['optimizer'],
@@ -113,7 +123,7 @@ for path in sorted((ROOT / 'outputs/custom_cnn').glob('*/config.json')):
     optimizer_rows.append(row)
     for key, value in row.items():
         record(c['model'], path.parent.name + ':' + key, value,
-               str(path.relative_to(ROOT)) + '; ' + str((path.parent/'history.csv').relative_to(ROOT)))
+               rel(path) + '; ' + rel(path.parent/'history.csv'))
 opt = pd.DataFrame(optimizer_rows)
 opt.to_csv(TABLE / 'optimizer_comparison.csv', index=False)
 tabular(TABLE / 'optimizer_comparison.tex', ['Code', 'Optimizer', 'LR', 'Mom.', 'Epoch', 'Val. loss', 'Val. acc. (%)', 'Train s'],
@@ -131,9 +141,12 @@ axes[0].set_ylabel('Selected-checkpoint validation accuracy (%)')
 fig.tight_layout(); fig.savefig(FIG / 'optimizer_comparison.pdf'); plt.close(fig)
 
 names = {'model_a': 'Standard A', 'model_c': 'Selected lightweight B',
-         'mobilenet_v2': 'MobileNetV2', 'shufflenet_v2_x0_5': 'ShuffleNetV2 x0.5'}
+         'model_d': 'Model D', 'mobilenet_v2': 'MobileNetV2',
+         'shufflenet_v2_x0_5': 'ShuffleNetV2 x0.5'}
 master, confusions = [], {}
-for metric_path in sorted((ROOT / 'outputs/reports').glob('evaluate-test_*/metrics.json')):
+metric_paths = sorted((ROOT / 'outputs/reports').glob('evaluate-test_*/metrics.json'))
+metric_paths.append(ROOT / 'outputs/reports/model_d_numpy126_final_test/metrics.json')
+for metric_path in metric_paths:
     m = json.loads(metric_path.read_text())
     run = m['run']
     run_path = next((ROOT / 'outputs' / p / run for p in ['custom_cnn', 'pretrained_cnn']
@@ -172,7 +185,9 @@ for metric_path in sorted((ROOT / 'outputs/reports').glob('evaluate-test_*/metri
     cost = model_cost(build_model(code))
     for key in ['total_parameters','trainable_parameters','conv_linear_macs_per_image']:
         assert cost[key] == m[key]
-    row = {'code': code, 'model': names[code], 'architecture': 'standard' if code=='model_a' else 'depthwise / mobile',
+    architecture = ('standard' if code == 'model_a' else
+                    'residual depthwise' if code == 'model_d' else 'depthwise / mobile')
+    row = {'code': code, 'model': names[code], 'architecture': architecture,
            'parameters': cost['trainable_parameters'], 'total_parameters': cost['total_parameters'],
            'fp32_parameter_KB': cost['trainable_parameters']*4/1000,
            'recorded_weight_bytes': m['actual_weights_file_bytes'], 'recorded_weight_MB': m['actual_weights_file_bytes']/1e6,
@@ -182,13 +197,13 @@ for metric_path in sorted((ROOT / 'outputs/reports').glob('evaluate-test_*/metri
            'val_loss': selected.val_loss, 'val_accuracy': selected.val_accuracy,
            **recomputed, 'mean_train_seconds': h.train_seconds.mean(),
            'mean_train_seconds_excluding_first': h.train_seconds.iloc[1:].mean(),
-           'test_pass_seconds': m['seconds'], 'report': str(metric_path.parent.relative_to(ROOT)),
-           'run_path': str(run_path.relative_to(ROOT))}
+           'test_pass_seconds': m['seconds'], 'report': rel(metric_path.parent),
+           'run_path': rel(run_path)}
     master.append(row); confusions[code] = cm
     for key,value in row.items():
         evidence = 'independently recomputed from predictions' if key in recomputed else 'saved artifact / source calculation'
         if key.startswith('recorded_weight'): evidence='recorded, not remeasured: checkpoint absent'
-        record(code,key,value,str(metric_path.relative_to(ROOT))+'; '+str(run_path.relative_to(ROOT))+'/history.csv',evidence)
+        record(code,key,value,rel(metric_path)+'; '+rel(run_path)+'/history.csv',evidence)
     fig,axes = plt.subplots(1,2,figsize=(9,3.3))
     for ax, key in zip(axes,['loss','accuracy']):
         ax.plot(h.epoch,h['train_'+key],label='Training'); ax.plot(h.epoch,h['val_'+key],label='Validation')
@@ -217,22 +232,25 @@ tabular(TABLE/'custom_comparison.tex',['Model','Params','FP32 KB','Weights KB*',
          for r in df.iloc[:2].itertuples()])
 tabular(TABLE/'training_timing.tex',['Model','Mean s','Mean excl. first s','Test pass s'],
         [[r.model,f'{r.mean_train_seconds:.3f}',f'{r.mean_train_seconds_excluding_first:.3f}',f'{r.test_pass_seconds:.3f}'] for r in df.itertuples()])
-fig,axes=plt.subplots(1,3,figsize=(11,3.6))
+plot_labels = ['A', 'Selected B', 'Model D', 'MobileNetV2', 'ShuffleNet']
+plot_colors = ['#345995', '#58a684', '#d46b5c', '#e2a03f', '#9564a4']
+positions = np.arange(len(df))
+fig,axes=plt.subplots(1,3,figsize=(12,3.8))
 for ax,field,label,scale in zip(axes,['accuracy','recorded_weight_MB','macs'],['Test accuracy (%)','Recorded state dictionary (MB)','Conv/linear MACs (millions)'],[100,1,1e-6]):
-    values=df[field]*scale; ax.bar(range(4),values,color=['#345995','#58a684','#e2a03f','#9564a4'])
-    ax.set_xticks(range(4),['A','Selected B','MobileNetV2','ShuffleNet'],rotation=25,ha='right'); ax.set_ylabel(label)
+    values=df[field]*scale; ax.bar(positions,values,color=plot_colors)
+    ax.set_xticks(positions,plot_labels,rotation=25,ha='right'); ax.set_ylabel(label)
     if field=='recorded_weight_MB':ax.set_yscale('log')
     if field=='accuracy':ax.set_ylim(90,100)
     for i,value in enumerate(values):ax.text(i,value,f'{value:.2f}',ha='center',va='bottom',fontsize=8)
 fig.tight_layout();fig.savefig(FIG/'final_comparison.pdf');plt.close(fig)
-fig,axes=plt.subplots(1,2,figsize=(10,3.8))
-axes[0].bar(range(4),df.parameters,color='#345995');axes[0].set_yscale('log')
+fig,axes=plt.subplots(1,2,figsize=(11,3.8))
+axes[0].bar(positions,df.parameters,color=plot_colors);axes[0].set_yscale('log')
 axes[0].set_ylabel('Trainable parameters (log scale)')
-axes[1].bar(np.arange(4)-.18,df.fp32_parameter_KB/1000,.36,label='FP32 parameters',color='#58a684')
-axes[1].bar(np.arange(4)+.18,df.recorded_weight_MB,.36,label='Recorded state dictionary',color='#e2a03f')
+axes[1].bar(positions-.18,df.fp32_parameter_KB/1000,.36,label='FP32 parameters',color='#58a684')
+axes[1].bar(positions+.18,df.recorded_weight_MB,.36,label='Recorded state dictionary',color='#e2a03f')
 axes[1].set_yscale('log');axes[1].set_ylabel('Storage MB (log scale)');axes[1].legend(fontsize=8)
 for ax in axes:
-    ax.set_xticks(range(4),['A','Selected B','MobileNetV2','ShuffleNet'],rotation=25,ha='right')
+    ax.set_xticks(positions,plot_labels,rotation=25,ha='right')
 fig.tight_layout();fig.savefig(FIG/'parameter_storage.pdf');plt.close(fig)
 
 # Leaf-level formulas and dimensions independently checked against tensor counts.
@@ -268,20 +286,13 @@ def layer_table(name,model):
         [[r['operation'],r['output'],r['formula'],f"{r['parameters']:,}"] for r in rows])
     return model_cost(model)
 
-for name in ['model_a','model_c','compact_eurosat']:layer_table(name,build_model(name))
+for name in ['model_a','model_c','compact_eurosat','model_d']:layer_table(name,build_model(name))
 
-# Execute only the architecture class definitions from the audited nipun ref.
-nipun_sha=BASELINE['nipun']
-source=git('show',nipun_sha+':src/cnn_assignment/models.py')
-tree=ast.parse(source)
-nodes=[n for n in tree.body if isinstance(n,ast.ClassDef) and n.name in ['ResidualDepthwiseBlock','ResidualDepthwiseCNN']]
-scope={'torch':torch,'nn':nn}
-exec(compile(ast.Module(body=nodes,type_ignores=[]),'<audited model_d classes>','exec'),scope)
-d_cost=layer_table('model_d',scope['ResidualDepthwiseCNN']())
+d_cost=model_cost(build_model('model_d'))
 assert d_cost['trainable_parameters']==15442 and d_cost['conv_linear_macs_per_image']==4728768
 compact_cost=model_cost(build_model('compact_eurosat'))
-dump(AUDIT/'candidate_costs.json',{'compact_eurosat':compact_cost,'model_d':d_cost,'nipun_ref':nipun_sha,
-    'model_d_results_status':'Markdown claims only; no run config/history/predictions/checkpoint in branch',
+dump(AUDIT/'candidate_costs.json',{'compact_eurosat':compact_cost,'model_d':d_cost,'nipun_ref':BASELINE['nipun'],
+    'model_d_results_status':'Verified from committed config, history, metrics, predictions, per-class results and confusion matrices; checkpoint file is not committed',
     'compact_results_status':'Historical notebook output; controlled common-protocol run blocked by absent images'})
 
 # Branch audit uses the original remote refs, prior to local synchronization.
@@ -294,25 +305,28 @@ for ref in ['main','heshan','integration/heshan-main-20261009','data/eurosat-pip
         'merged':ahead==0,'unique_files':unique.replace('\n','; '),
         'recommendation': 'preserve; already integrated' if ahead==0 else
             ('synchronized locally; preserve historical notebook; candidate pending controlled run' if ref=='simple_model' else
-             'preserve optional architecture; obtain primary experiment artifacts before comparison')})
+             'historical branch later integrated; final experiment artifacts are now on main')})
 pd.DataFrame(branches).to_csv(AUDIT/'branch_audit.csv',index=False)
 pd.DataFrame(provenance).to_csv(AUDIT/'report_data_sources.csv',index=False)
 source_paths = set()
 for pattern in ['outputs/custom_cnn/*/config.json', 'outputs/custom_cnn/*/history.csv',
                 'outputs/pretrained_cnn/*/config.json', 'outputs/pretrained_cnn/*/history.csv',
                 'outputs/reports/evaluate-test_*/*.csv', 'outputs/reports/evaluate-test_*/metrics.json',
+                'outputs/reports/model_d_numpy126_final_test/*.csv',
+                'outputs/reports/model_d_numpy126_final_test/metrics.json',
                 'data/splits/*.csv', 'src/cnn_assignment/*.py', 'notebooks/03_model_B_compact_cnn.ipynb']:
     source_paths.update(ROOT.glob(pattern))
-dump(AUDIT/'source_file_hashes.json', {str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest()
+dump(AUDIT/'source_file_hashes.json', {rel(p):hashlib.sha256(git_bytes('show', 'HEAD:' + rel(p))).hexdigest()
                                      for p in sorted(source_paths)})
+by_code = {row['code']: row for row in master}
 dump(AUDIT/'derived_values.json', {
     'selected_B_vs_A':{
         'parameter_reduction_percent':100*(1-master[1]['parameters']/master[0]['parameters']),
         'MAC_reduction_percent':100*(1-master[1]['macs']/master[0]['macs']),
         'accuracy_difference_percentage_points':100*(master[1]['accuracy']-master[0]['accuracy']),
         'additional_correct_test_images':round(4050*(master[1]['accuracy']-master[0]['accuracy']))},
-    'MobileNetV2_parameter_ratio_to_B':master[2]['parameters']/master[1]['parameters'],
-    'ShuffleNetV2_parameter_ratio_to_B':master[3]['parameters']/master[1]['parameters'],
+    'MobileNetV2_parameter_ratio_to_B':by_code['mobilenet_v2']['parameters']/by_code['model_c']['parameters'],
+    'ShuffleNetV2_parameter_ratio_to_B':by_code['shufflenet_v2_x0_5']['parameters']/by_code['model_c']['parameters'],
     'custom_normalization_source':'outputs/custom_cnn/model_a_adam_lr0.001/config.json',
     'layer_formula_sources':'tables/*_layers.csv',
     'numeric_constant_sources':{'seed_batch_epochs_lr_weight_decay':'saved run configs; optimizer_comparison.csv',
@@ -320,7 +334,7 @@ dump(AUDIT/'derived_values.json', {
                               'group_number':'user supplied 54',
                               'team_names':'README.md and git show c6c64fe:README.md'},
     'historical_compact_notebook':'notebooks/03_model_B_compact_cnn.ipynb cells 3, 14, 16, 24, 26, 28-30',
-    'model_D_claims':'origin/nipun:docs/model_d_results.md (unverified prose; excluded from master table)'})
+    'model_D_evidence':'outputs/custom_cnn/model_d_residual_numpy126 plus outputs/reports/model_d_numpy126_final_test (verified and included in master table)'})
 dump(AUDIT/'generation.json',{'base_main':git('rev-parse','origin/main'),
     'assignment_pdf':'EN3150_Assignment_03_In23.pdf','assignment_sha256':hashlib.sha256((ROOT/'EN3150_Assignment_03_In23.pdf').read_bytes()).hexdigest(),
     'python':sys.version,'torch':torch.__version__,

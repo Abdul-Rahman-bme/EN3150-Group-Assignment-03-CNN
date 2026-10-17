@@ -16,5 +16,5 @@
     "team_names": "README.md and git show c6c64fe:README.md"
   },
   "historical_compact_notebook": "notebooks/03_model_B_compact_cnn.ipynb cells 3, 14, 16, 24, 26, 28-30",
-  "model_D_claims": "origin/nipun:docs/model_d_results.md (unverified prose; excluded from master table)"
+  "model_D_evidence": "outputs/custom_cnn/model_d_residual_numpy126 plus outputs/reports/model_d_numpy126_final_test (verified and included in master table)"
 }

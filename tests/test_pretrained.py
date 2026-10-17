@@ -200,7 +200,9 @@ class PretrainedChecks(unittest.TestCase):
                 with contextlib.redirect_stdout(io.StringIO()):
                     main(['plot', '--additional-runs-root', str(root), '--output-dir', str(root / 'combined')])
                 combined = pd.read_csv(root / 'combined/optimizer_comparison.csv')
-                self.assertEqual(len(combined), 13)
+                # Twelve optimizer-sweep runs plus the verified Model D run and
+                # the temporary pretrained run created above.
+                self.assertEqual(len(combined), 14)
                 self.assertIn(name, set(combined['model']))
 
     def test_epoch_boundary_resume_with_genuine_initialization_and_simulated_epochs(self):

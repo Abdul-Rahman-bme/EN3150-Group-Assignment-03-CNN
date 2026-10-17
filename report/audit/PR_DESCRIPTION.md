@@ -15,11 +15,12 @@ selection differ. Its printed 94.72% test result is not used to replace Model B.
 The new controlled experiment has **not run**: images are absent and official/user
 download routes return proxy 403. Test evaluation is pending a validation-based
 decision. Selected final Model B remains `model_c`; no new comparative metric is
-invented. Model D is an optional architecture audit because its primary result
-artifacts are absent.
+invented. This paragraph originally predated the completed Model D run. Model D
+now has committed configuration, history, predictions, metrics and confusion
+matrices and is included in the verified comparison.
 
 The group-54 editable LaTeX report, compiled PDF, vector figures and CSV evidence
-recompute the four existing final metrics from saved predictions and model costs
+recompute the four assignment-required final metrics plus Model D from saved predictions and model costs
 from source. File-size measurements and training timings are explicitly historical.
 
 Validation: all 14 existing Model C/pretrained tests and both new candidate tests

@@ -1,9 +1,9 @@
 {
-  "base_main": "8b81b3812aaa84ad5ac7fd11c741dc792ecd9b21",
+  "base_main": "ce21907446009e86255b4727cc4dec46fa0f0ccd",
   "assignment_pdf": "EN3150_Assignment_03_In23.pdf",
   "assignment_sha256": "b5e2a32372f5ee158465d7b00ce0a66156ba38278c13b9133832b621b9a53b92",
-  "python": "3.11.17 (main, Oct  3 2026, 01:05:36) [Clang 22.1.3 ]",
-  "torch": "2.5.1+cpu",
+  "python": "3.11.17 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:16:54) [MSC v.1942 64 bit (AMD64)]",
+  "torch": "2.11.0+cu128",
   "scope": "Saved-artifact reanalysis and synthetic architecture checks; no dataset training or test inference performed.",
   "required_models": [
     {
@@ -55,6 +55,31 @@
       "test_pass_seconds": 3.463148300001194,
       "report": "outputs/reports/evaluate-test_20261009T051430041328Z",
       "run_path": "outputs/custom_cnn/model_c_adam_lr0.001"
+    },
+    {
+      "code": "model_d",
+      "model": "Model D",
+      "architecture": "residual depthwise",
+      "parameters": 15442,
+      "total_parameters": 15442,
+      "fp32_parameter_KB": 61.768,
+      "recorded_weight_bytes": 82062,
+      "recorded_weight_MB": 0.082062,
+      "recorded_weight_KB": 82.062,
+      "weight_size_status": "recorded in saved metrics; trained file unavailable for remeasurement",
+      "macs": 4728768,
+      "selected_epoch": 30,
+      "val_loss": 0.1802019565340913,
+      "val_accuracy": 0.9417283950617285,
+      "accuracy": 0.9362962962962963,
+      "macro_precision": 0.9343017802473179,
+      "macro_recall": 0.9342,
+      "macro_f1": 0.934001052075984,
+      "mean_train_seconds": 21.227016269999634,
+      "mean_train_seconds_excluding_first": 21.3064841103448,
+      "test_pass_seconds": 3.073092500009807,
+      "report": "outputs/reports/model_d_numpy126_final_test",
+      "run_path": "outputs/custom_cnn/model_d_residual_numpy126"
     },
     {
       "code": "mobilenet_v2",
