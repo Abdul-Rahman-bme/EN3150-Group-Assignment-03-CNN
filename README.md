@@ -205,7 +205,7 @@ architectures.
 | Initial lightweight Model B | `model_b` | Custom depthwise-separable CNN | 12,965 | 5,141,760 | Not part of final test set |
 | Final lightweight Model B | `model_c` | Custom wide depthwise-separable CNN | 46,373 | 18,561,536 | 94.37% |
 | CompactEuroSAT | `compact_eurosat` | Additional compact CNN | 11,466 | 3,882,784 | 94.72%* |
-| Model D | `model_d` | Additional residual depthwise CNN | 15,442 | 4,728,768 | 93.63%* |
+| Model D | `model_d` | Additional residual depthwise CNN | 15,442 | 4,728,768 | 93.63% |
 | MobileNetV2 | `mobilenet_v2` | Pretrained | 2,236,682 | 24,461,312 | 98.12% |
 | ShuffleNetV2 x0.5 | `shufflenet_v2_x0_5` | Pretrained | 352,042 | 3,230,848 | 96.37% |
 
@@ -952,6 +952,8 @@ The CompactEuroSAT tests passed:
 
 # 10. Nipun's Model D — Residual Depthwise CNN
 
+**Verification status:** Model D is now a verified additional experiment. The repository contains its configuration, 30-epoch training history, final-test metrics, 4,050 predictions, per-class metrics, raw and normalized confusion matrices, and reproducibility hashes. The final test result is **93.63% accuracy** with **93.40% macro F1**. The trained checkpoint itself is not committed, but its recorded SHA-256 is retained in the evidence.
+
 ## 10.1 Purpose
 
 Model D was introduced as an additional architecture experiment by **Nipun**.
@@ -1395,14 +1397,13 @@ measured inference speed.
 
 # 16. Additional Model Comparison
 
-The additional experiments are shown separately because their protocols and
-evidence availability differ.
+CompactEuroSAT remains separate because its historical 94.72% result used a different training protocol. Model D is now supported by saved training and final-test evidence and is included in the verified comparison.
 
 | Model | Parameters | MACs/image | Test accuracy | Status |
 |---|---:|---:|---:|---|
 | Final Model B (`model_c`) | 46,373 | 18,561,536 | 94.37% | Final controlled model |
 | CompactEuroSAT | 11,466 | 3,882,784 | 94.72%* | Historical additional experiment |
-| Model D | 15,442 | 4,728,768 | 93.63%* | Additional experiment |
+| Model D | 15,442 | 4,728,768 | 93.63% | Verified additional experiment |
 
 \* These results should not be treated as identical-protocol replacements for
 the four-model final comparison.
@@ -1517,7 +1518,7 @@ are therefore not treated as a controlled hardware benchmark.
 
 # 20. Per-Class Test Results
 
-The following results are from the four controlled final test reports.
+The following results are from the four controlled final test reports plus the completed Model D final-test report.
 
 The support values are the same across all models.
 
